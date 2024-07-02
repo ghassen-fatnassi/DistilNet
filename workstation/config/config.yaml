@@ -1,0 +1,23 @@
+paths:
+  datasets: "FOR-ACTIA/FF/datasets"
+
+dataset:
+  name: "cityscapes"
+  train_imgs_dir: "path/to/cityscapes/images"
+  train_masks_dir: "path/to/cityscapes/masks"
+  test_imgs_dir: "path/to/cityscapes/images"
+  test_masks_dir: "path/to/cityscapes/masks"
+  img_type: "png"
+  mask_type: "png"
+  num_classes: 19
+
+resize:
+  H: 256
+  W: 512
+
+log_dir:
+
+hyperparameters:
+  batch_size: 4
+  lr: 0.0003
+  epochs: 5
