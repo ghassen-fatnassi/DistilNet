@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader,random_split
-from torch.optim import Adam,SGD,lr_scheduler,AdamW,Adamax
+from torch.optim import Adam,SGD,AdamW,Adamax
+from torch.optim.lr_scheduler import StepLR,ReduceLROnPlateau
 from accelerate import Accelerator
 from accelerate.utils import LoggerType
 
@@ -13,14 +14,18 @@ import loss
 from models.Unet import segUnet
 from config_loader import load_yaml
 import wandb
+import os
+
 
 """loading config file"""
 cfg=load_yaml()
 
+"""setting wandb api key as an environment variable && changing log directory"""
+os.environ['WANDB_API_KEY'] = cfg['API_KEYS']['wandb']
+os.environ["WANDB_DIR"] = os.path.abspath("/media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet")
+
 """setting up the device"""
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-
 
 def train_step(model ,dataloader ,criterion ,optimizer ,accelerator):
 
@@ -34,12 +39,15 @@ def train_step(model ,dataloader ,criterion ,optimizer ,accelerator):
         
         optimizer.zero_grad()
 
-        with accelerator.auto_cast():
+        with accelerator.autocast():
             outputs=model(images)
             curr_loss=criterion(outputs, masks)
         
-        accelerator.backward(loss)
+        accelerator.backward(curr_loss)
         optimizer.step()
+        
+        if(batch>=10):
+            break
 
     loss+=curr_loss.item() 
     metrics['loss']=loss/len(dataloader)
@@ -54,10 +62,12 @@ def val_step(model,dataloader,criterion,accelerator):
         images=images.to(accelerator.device)
         masks=masks.to(accelerator.device)
 
-        with accelerator.auto_cast():
+        with accelerator.autocast():
             with torch.inference_mode():
                 outputs=model(images)
                 curr_loss=criterion(outputs,masks)
+        if(batch>=10):
+            break
         
     loss+=curr_loss.item()
     metrics['loss']=loss/len(dataloader)
@@ -76,19 +86,25 @@ def engine(model,train_loader,val_loader,criterion,optimizer,scheduler,accelerat
 
 
 train_val_data=SegDataset(mode='train')
-train_loader,val_loader=datasetSplitter(train_val_data,cfg['hyperparameters']['batch_size'])
+train_loader,val_loader=datasetSplitter(train_val_data,cfg['hyperparameters']['batch_size']).split()
 
-teacher=segUnet(num_classes=cfg['dataset']['num_classes'], in_channels=3, depth=2, start_filts=16)
+teacher=segUnet(num_classes=cfg['dataset']['num_classes'], in_channels=3, depth=2, start_filts=1)
 optimizer=AdamW(teacher.parameters(),lr=cfg['hyperparameters']['lr'])
-scheduler=lr_scheduler().StepLR(optimizer,step_size=cfg['hyperparameters']['step_size'],gamma=cfg['hyperparameters']['gamma'])
+scheduler=StepLR(optimizer,step_size=cfg['hyperparameters']['step_size'],gamma=cfg['hyperparameters']['gamma'])
 criterion=loss.basicCELoss()
-accelerator = Accelerator(log_with=["wandb", LoggerType.TENSORBOARD])
+accelerator = Accelerator(log_with="wandb")
+
 
 accelerator.init_trackers(
     project_name="my_project",
-    config=cfg['hyperparameters']
+    config=cfg['hyperparameters'],
     )
 
-accelerator.device = device
-teacher.to(accelerator.device)
-criterion.to(accelerator.device)
+
+teacher, optimizer, criterion, scheduler, train_loader, val_loader =accelerator.prepare(teacher, optimizer, criterion, scheduler, train_loader, val_loader)
+
+engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+
+wandb_tracker = accelerator.get_tracker("wandb")
+wandb_tracker.finish()
+

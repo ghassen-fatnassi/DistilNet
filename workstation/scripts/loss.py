@@ -8,6 +8,6 @@ class basicCELoss(nn.Module):
         self.criterion = nn.CrossEntropyLoss()
 
     def forward(self,out_mask,true_mask):
-        return self.criterion(out_mask,true_mask)
+        return self.criterion(true_mask.float(),out_mask)
 
     

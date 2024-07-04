@@ -1,0 +1,186 @@
+2024-07-04 23:34:45,017 INFO    StreamThr :25010 [internal.py:wandb_internal():85] W&B internal server running at pid: 25010, started at: 2024-07-04 23:34:45.015696
+2024-07-04 23:34:45,018 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: status
+2024-07-04 23:34:45,030 INFO    WriterThread:25010 [datastore.py:open_for_write():87] open: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/run-4rpns0da.wandb
+2024-07-04 23:34:45,031 DEBUG   SenderThread:25010 [sender.py:send():379] send: header
+2024-07-04 23:34:45,046 DEBUG   SenderThread:25010 [sender.py:send():379] send: run
+2024-07-04 23:34:45,970 INFO    SenderThread:25010 [dir_watcher.py:__init__():211] watching files in: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files
+2024-07-04 23:34:45,971 INFO    SenderThread:25010 [sender.py:_start_run_threads():1188] run started: 4rpns0da with start time 1720132485.017375
+2024-07-04 23:34:45,987 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: check_version
+2024-07-04 23:34:45,988 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: check_version
+2024-07-04 23:34:46,363 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: run_start
+2024-07-04 23:34:46,398 ERROR   HandlerThread:25010 [gpu.py:is_available():381] Error initializing NVML: Driver Not Loaded
+2024-07-04 23:34:46,400 DEBUG   HandlerThread:25010 [system_info.py:__init__():26] System info init
+2024-07-04 23:34:46,400 DEBUG   HandlerThread:25010 [system_info.py:__init__():41] System info init done
+2024-07-04 23:34:46,400 INFO    HandlerThread:25010 [system_monitor.py:start():194] Starting system monitor
+2024-07-04 23:34:46,400 INFO    SystemMonitor:25010 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-07-04 23:34:46,401 INFO    HandlerThread:25010 [system_monitor.py:probe():214] Collecting system info
+2024-07-04 23:34:46,401 INFO    SystemMonitor:25010 [interfaces.py:start():188] Started cpu monitoring
+2024-07-04 23:34:46,403 INFO    SystemMonitor:25010 [interfaces.py:start():188] Started disk monitoring
+2024-07-04 23:34:46,405 INFO    SystemMonitor:25010 [interfaces.py:start():188] Started memory monitoring
+2024-07-04 23:34:46,406 INFO    SystemMonitor:25010 [interfaces.py:start():188] Started network monitoring
+2024-07-04 23:34:46,431 DEBUG   HandlerThread:25010 [system_info.py:probe():152] Probing system
+2024-07-04 23:34:46,438 DEBUG   HandlerThread:25010 [system_info.py:_probe_git():137] Probing git
+2024-07-04 23:34:46,458 DEBUG   HandlerThread:25010 [system_info.py:_probe_git():145] Probing git done
+2024-07-04 23:34:46,459 DEBUG   HandlerThread:25010 [system_info.py:probe():200] Probing system done
+2024-07-04 23:34:46,459 DEBUG   HandlerThread:25010 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-102-generic-x86_64-with-glibc2.35', 'python': '3.10.12', 'heartbeatAt': '2024-07-04T22:34:46.431521', 'startedAt': '2024-07-04T22:34:44.967764', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py', 'codePathLocal': 'train.py', 'codePath': 'workstation/scripts/train.py', 'git': {'remote': 'git@github.com:ghassen-fatnassi/ACTIA.git', 'commit': '281d3d433d8b930d9e45d31cf185eda96255b992'}, 'email': 'oneinbillion77@gmail.com', 'root': '/media/gaston/gaston1/DEV/ACTIA', 'host': 'gaston-Lenovo-IdeaPad-L340-15API', 'username': 'gaston', 'executable': '/home/gaston/Documents/icreatemodels/bin/python', 'cpu_count': 2, 'cpu_count_logical': 4, 'cpu_freq': {'current': 2657.1014999999998, 'min': 1400.0, 'max': 2600.0}, 'cpu_freq_per_core': [{'current': 2600.0, 'min': 1400.0, 'max': 2600.0}, {'current': 2600.0, 'min': 1400.0, 'max': 2600.0}, {'current': 2600.0, 'min': 1400.0, 'max': 2600.0}, {'current': 2828.406, 'min': 1400.0, 'max': 2600.0}], 'disk': {'/': {'total': 95.37606048583984, 'used': 59.894710540771484}}, 'memory': {'total': 3.2037429809570312}}
+2024-07-04 23:34:46,459 INFO    HandlerThread:25010 [system_monitor.py:probe():224] Finished collecting system info
+2024-07-04 23:34:46,459 INFO    HandlerThread:25010 [system_monitor.py:probe():227] Publishing system info
+2024-07-04 23:34:46,464 INFO    HandlerThread:25010 [system_monitor.py:probe():229] Finished publishing system info
+2024-07-04 23:34:46,474 DEBUG   SenderThread:25010 [sender.py:send():379] send: files
+2024-07-04 23:34:46,474 INFO    SenderThread:25010 [sender.py:_save_file():1454] saving file wandb-metadata.json with policy now
+2024-07-04 23:34:46,880 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: python_packages
+2024-07-04 23:34:46,880 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: python_packages
+2024-07-04 23:34:46,890 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: stop_status
+2024-07-04 23:34:46,890 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: stop_status
+2024-07-04 23:34:46,933 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-04 23:34:46,977 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_created():271] file/dir created: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/wandb-metadata.json
+2024-07-04 23:34:46,978 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_created():271] file/dir created: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/requirements.txt
+2024-07-04 23:34:47,372 DEBUG   SenderThread:25010 [sender.py:send():379] send: telemetry
+2024-07-04 23:34:47,379 DEBUG   SenderThread:25010 [sender.py:send():379] send: config
+2024-07-04 23:34:47,634 INFO    wandb-upload_0:25010 [upload_job.py:push():130] Uploaded file /tmp/tmpawqxssgawandb/6ggjvem4-wandb-metadata.json
+2024-07-04 23:34:47,887 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-04 23:34:48,101 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_created():271] file/dir created: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/output.log
+2024-07-04 23:34:48,887 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-04 23:34:49,176 DEBUG   SenderThread:25010 [sender.py:send():379] send: exit
+2024-07-04 23:34:49,177 INFO    SenderThread:25010 [sender.py:send_exit():586] handling exit code: 1
+2024-07-04 23:34:49,177 INFO    SenderThread:25010 [sender.py:send_exit():588] handling runtime: 2
+2024-07-04 23:34:49,184 INFO    SenderThread:25010 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-04 23:34:49,185 INFO    SenderThread:25010 [sender.py:send_exit():594] send defer
+2024-07-04 23:34:49,185 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,185 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 0
+2024-07-04 23:34:49,185 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,186 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 0
+2024-07-04 23:34:49,186 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 1
+2024-07-04 23:34:49,186 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,186 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 1
+2024-07-04 23:34:49,186 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,187 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 1
+2024-07-04 23:34:49,187 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 2
+2024-07-04 23:34:49,187 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,187 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 2
+2024-07-04 23:34:49,187 INFO    HandlerThread:25010 [system_monitor.py:finish():203] Stopping system monitor
+2024-07-04 23:34:49,187 DEBUG   SystemMonitor:25010 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-07-04 23:34:49,187 INFO    HandlerThread:25010 [interfaces.py:finish():200] Joined cpu monitor
+2024-07-04 23:34:49,187 DEBUG   SystemMonitor:25010 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-07-04 23:34:49,188 INFO    HandlerThread:25010 [interfaces.py:finish():200] Joined disk monitor
+2024-07-04 23:34:49,188 DEBUG   SystemMonitor:25010 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-07-04 23:34:49,188 INFO    HandlerThread:25010 [interfaces.py:finish():200] Joined memory monitor
+2024-07-04 23:34:49,189 INFO    HandlerThread:25010 [interfaces.py:finish():200] Joined network monitor
+2024-07-04 23:34:49,190 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,190 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 2
+2024-07-04 23:34:49,190 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 3
+2024-07-04 23:34:49,191 DEBUG   SenderThread:25010 [sender.py:send():379] send: stats
+2024-07-04 23:34:49,191 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,191 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 3
+2024-07-04 23:34:49,192 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,192 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 3
+2024-07-04 23:34:49,192 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 4
+2024-07-04 23:34:49,192 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,192 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 4
+2024-07-04 23:34:49,193 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,194 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 4
+2024-07-04 23:34:49,194 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 5
+2024-07-04 23:34:49,194 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,195 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 5
+2024-07-04 23:34:49,195 DEBUG   SenderThread:25010 [sender.py:send():379] send: summary
+2024-07-04 23:34:49,196 INFO    SenderThread:25010 [sender.py:_save_file():1454] saving file wandb-summary.json with policy end
+2024-07-04 23:34:49,197 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,197 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 5
+2024-07-04 23:34:49,197 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 6
+2024-07-04 23:34:49,197 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,197 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 6
+2024-07-04 23:34:49,198 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,198 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 6
+2024-07-04 23:34:49,203 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: status_report
+2024-07-04 23:34:49,866 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 7
+2024-07-04 23:34:49,867 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:49,871 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 7
+2024-07-04 23:34:49,871 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:49,872 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 7
+2024-07-04 23:34:50,092 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_modified():288] file/dir modified: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/output.log
+2024-07-04 23:34:50,093 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_modified():288] file/dir modified: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/config.yaml
+2024-07-04 23:34:50,094 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_created():271] file/dir created: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/wandb-summary.json
+2024-07-04 23:34:50,176 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:51,905 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 8
+2024-07-04 23:34:51,906 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:51,906 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:51,907 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 8
+2024-07-04 23:34:51,907 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:51,908 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 8
+2024-07-04 23:34:51,908 INFO    SenderThread:25010 [job_builder.py:build():440] Attempting to build job artifact
+2024-07-04 23:34:51,910 INFO    SenderThread:25010 [job_builder.py:_get_source_type():569] is repo sourced job
+2024-07-04 23:34:51,965 INFO    SenderThread:25010 [job_builder.py:build():545] adding wandb-job metadata file
+2024-07-04 23:34:51,973 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 9
+2024-07-04 23:34:51,974 DEBUG   SenderThread:25010 [sender.py:send():379] send: artifact
+2024-07-04 23:34:51,974 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:51,978 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 9
+2024-07-04 23:34:52,098 INFO    Thread-12 :25010 [dir_watcher.py:_on_file_modified():288] file/dir modified: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/output.log
+2024-07-04 23:34:52,178 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:53,359 INFO    SenderThread:25010 [sender.py:send_artifact():1530] sent artifact job-git_github.com_ghassen-fatnassi_ACTIA.git_workstation_scripts_train.py - {'id': 'QXJ0aWZhY3Q6OTQ0Njg0NTc4', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjI0NDc4Njc0OA==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6OTQ0Njg0NTc4', 'versionIndex': 0}}}
+2024-07-04 23:34:53,359 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:53,359 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 9
+2024-07-04 23:34:53,359 INFO    SenderThread:25010 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-07-04 23:34:54,101 INFO    SenderThread:25010 [dir_watcher.py:finish():388] scan: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files
+2024-07-04 23:34:54,102 INFO    SenderThread:25010 [dir_watcher.py:finish():402] scan save: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/config.yaml config.yaml
+2024-07-04 23:34:54,103 INFO    SenderThread:25010 [dir_watcher.py:finish():402] scan save: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/output.log output.log
+2024-07-04 23:34:54,108 INFO    SenderThread:25010 [dir_watcher.py:finish():402] scan save: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/requirements.txt requirements.txt
+2024-07-04 23:34:54,112 INFO    SenderThread:25010 [dir_watcher.py:finish():402] scan save: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/wandb-metadata.json wandb-metadata.json
+2024-07-04 23:34:54,113 INFO    SenderThread:25010 [dir_watcher.py:finish():402] scan save: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/wandb-summary.json wandb-summary.json
+2024-07-04 23:34:54,116 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 10
+2024-07-04 23:34:54,116 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:54,116 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:54,119 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 10
+2024-07-04 23:34:54,119 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:54,120 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 10
+2024-07-04 23:34:54,120 INFO    SenderThread:25010 [file_pusher.py:finish():169] shutting down file pusher
+2024-07-04 23:34:54,179 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:54,180 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:54,803 INFO    wandb-upload_0:25010 [upload_job.py:push():130] Uploaded file /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/config.yaml
+2024-07-04 23:34:54,918 INFO    wandb-upload_1:25010 [upload_job.py:push():130] Uploaded file /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/output.log
+2024-07-04 23:34:55,070 INFO    wandb-upload_2:25010 [upload_job.py:push():130] Uploaded file /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/requirements.txt
+2024-07-04 23:34:55,075 INFO    wandb-upload_3:25010 [upload_job.py:push():130] Uploaded file /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/files/wandb-summary.json
+2024-07-04 23:34:55,180 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:55,181 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:55,276 INFO    Thread-11 (_thread_body):25010 [sender.py:transition_state():614] send defer: 11
+2024-07-04 23:34:55,276 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:55,277 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 11
+2024-07-04 23:34:55,277 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:55,277 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 11
+2024-07-04 23:34:55,277 INFO    SenderThread:25010 [file_pusher.py:join():175] waiting for file pusher
+2024-07-04 23:34:55,278 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 12
+2024-07-04 23:34:55,278 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:55,278 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 12
+2024-07-04 23:34:55,279 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:55,279 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 12
+2024-07-04 23:34:55,279 INFO    SenderThread:25010 [file_stream.py:finish():601] file stream finish called
+2024-07-04 23:34:55,615 INFO    SenderThread:25010 [file_stream.py:finish():605] file stream finish is done
+2024-07-04 23:34:55,615 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 13
+2024-07-04 23:34:55,616 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:55,617 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 13
+2024-07-04 23:34:55,617 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:55,617 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 13
+2024-07-04 23:34:55,618 INFO    SenderThread:25010 [sender.py:transition_state():614] send defer: 14
+2024-07-04 23:34:55,618 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: defer
+2024-07-04 23:34:55,619 DEBUG   SenderThread:25010 [sender.py:send():379] send: final
+2024-07-04 23:34:55,619 INFO    HandlerThread:25010 [handler.py:handle_request_defer():184] handle defer: 14
+2024-07-04 23:34:55,619 DEBUG   SenderThread:25010 [sender.py:send():379] send: footer
+2024-07-04 23:34:55,620 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: defer
+2024-07-04 23:34:55,620 INFO    SenderThread:25010 [sender.py:send_request_defer():610] handle sender defer: 14
+2024-07-04 23:34:55,621 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:55,622 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: server_info
+2024-07-04 23:34:55,623 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: poll_exit
+2024-07-04 23:34:55,623 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:55,624 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: get_summary
+2024-07-04 23:34:55,624 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: server_info
+2024-07-04 23:34:55,625 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: sampled_history
+2024-07-04 23:34:55,629 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: internal_messages
+2024-07-04 23:34:55,817 DEBUG   SenderThread:25010 [sender.py:send_request():406] send_request: poll_exit
+2024-07-04 23:34:55,818 INFO    MainThread:25010 [wandb_run.py:_footer_history_summary_info():3991] rendering history
+2024-07-04 23:34:55,818 INFO    MainThread:25010 [wandb_run.py:_footer_history_summary_info():4023] rendering summary
+2024-07-04 23:34:55,818 INFO    MainThread:25010 [wandb_run.py:_footer_sync_info():3950] logging synced files
+2024-07-04 23:34:55,819 DEBUG   HandlerThread:25010 [handler.py:handle_request():158] handle_request: shutdown
+2024-07-04 23:34:55,819 INFO    HandlerThread:25010 [handler.py:finish():882] shutting down handler
+2024-07-04 23:34:56,624 INFO    WriterThread:25010 [datastore.py:close():296] close: /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_233444-4rpns0da/run-4rpns0da.wandb
+2024-07-04 23:34:56,818 INFO    SenderThread:25010 [sender.py:finish():1608] shutting down sender
+2024-07-04 23:34:56,818 INFO    SenderThread:25010 [file_pusher.py:finish():169] shutting down file pusher
+2024-07-04 23:34:56,818 INFO    SenderThread:25010 [file_pusher.py:join():175] waiting for file pusher

@@ -1,0 +1,50 @@
+Processing:   0%|                                                       | 0/695 [00:00<?, ?it/s]
+Processing:   0%|                                                         | 0/5 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 101, in <module>
+    engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 73, in engine
+    epoch_train_metrics=train_step(model,train_loader,criterion,optimizer,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 35, in train_step
+    for batch,(images,masks) in enumerate(tqdm(dataloader)):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/supervisely/task/progress.py", line 453, in __iter__
+    yield from super().__iter__()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/accelerate/data_loader.py", line 454, in __iter__
+    current_batch = next(dataloader_iter)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 675, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/segmentationDataset.py", line 30, in __getitem__
+    mask_path = self.mask_paths[index]
+IndexError: list index out of range
+Traceback (most recent call last):
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 101, in <module>
+    engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 73, in engine
+    epoch_train_metrics=train_step(model,train_loader,criterion,optimizer,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 35, in train_step
+    for batch,(images,masks) in enumerate(tqdm(dataloader)):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/supervisely/task/progress.py", line 453, in __iter__
+    yield from super().__iter__()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/accelerate/data_loader.py", line 454, in __iter__
+    current_batch = next(dataloader_iter)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 675, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/segmentationDataset.py", line 30, in __getitem__
+    mask_path = self.mask_paths[index]
+IndexError: list index out of range

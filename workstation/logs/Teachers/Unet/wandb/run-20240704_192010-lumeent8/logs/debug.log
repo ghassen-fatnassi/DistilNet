@@ -1,0 +1,29 @@
+2024-07-04 19:20:10,963 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Current SDK version is 0.17.4
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Configure stats pid to 14920
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Loading settings from /home/gaston/.config/wandb/settings
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Loading settings from /media/gaston/gaston1/DEV/ACTIA/workstation/scripts/wandb/settings
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'api_key': '***REDACTED***', 'root_dir': '/media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet'}
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'workstation/scripts/train.py', 'program_abspath': '/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py', 'program': '/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py'}
+2024-07-04 19:20:10,964 INFO    MainThread:14920 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-07-04 19:20:10,965 INFO    MainThread:14920 [wandb_init.py:_log_setup():529] Logging user logs to /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_192010-lumeent8/logs/debug.log
+2024-07-04 19:20:10,966 INFO    MainThread:14920 [wandb_init.py:_log_setup():530] Logging internal logs to /media/gaston/gaston1/DEV/ACTIA/workstation/logs/Teachers/Unet/wandb/run-20240704_192010-lumeent8/logs/debug-internal.log
+2024-07-04 19:20:10,967 INFO    MainThread:14920 [wandb_init.py:init():569] calling init triggers
+2024-07-04 19:20:10,967 INFO    MainThread:14920 [wandb_init.py:init():576] wandb.init called with sweep_config: {}
+config: {}
+2024-07-04 19:20:10,967 INFO    MainThread:14920 [wandb_init.py:init():619] starting backend
+2024-07-04 19:20:10,967 INFO    MainThread:14920 [wandb_init.py:init():623] setting up manager
+2024-07-04 19:20:10,975 INFO    MainThread:14920 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-07-04 19:20:10,977 INFO    MainThread:14920 [wandb_init.py:init():631] backend started and connected
+2024-07-04 19:20:10,992 INFO    MainThread:14920 [wandb_init.py:init():720] updated telemetry
+2024-07-04 19:20:11,012 INFO    MainThread:14920 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-07-04 19:20:13,896 INFO    MainThread:14920 [wandb_run.py:_on_init():2402] communicating current version
+2024-07-04 19:20:14,277 INFO    MainThread:14920 [wandb_run.py:_on_init():2411] got version response 
+2024-07-04 19:20:14,278 INFO    MainThread:14920 [wandb_init.py:init():804] starting run threads in backend
+2024-07-04 19:20:14,710 INFO    MainThread:14920 [wandb_run.py:_console_start():2380] atexit reg
+2024-07-04 19:20:14,710 INFO    MainThread:14920 [wandb_run.py:_redirect():2235] redirect: wrap_raw
+2024-07-04 19:20:14,711 INFO    MainThread:14920 [wandb_run.py:_redirect():2300] Wrapping output streams.
+2024-07-04 19:20:14,712 INFO    MainThread:14920 [wandb_run.py:_redirect():2325] Redirects installed.
+2024-07-04 19:20:14,717 INFO    MainThread:14920 [wandb_init.py:init():847] run started, returning control to user process
+2024-07-04 19:20:14,718 INFO    MainThread:14920 [wandb_run.py:_config_callback():1382] config_cb None None {'batch_size': 4, 'lr': 0.0003, 'epochs': 5, 'step_size': 10, 'gamma': 0.5}
+2024-07-04 19:20:21,767 WARN    MsgRouterThr:14920 [router.py:message_loop():77] message_loop has been closed
