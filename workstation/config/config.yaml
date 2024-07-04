@@ -21,3 +21,5 @@ hyperparameters:
   batch_size: 4
   lr: 0.0003
   epochs: 5
+  step_size: 10
+  gamme: 0.5
