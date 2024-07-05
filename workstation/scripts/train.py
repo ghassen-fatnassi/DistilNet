@@ -102,8 +102,9 @@ accelerator.init_trackers(
 
 
 teacher, optimizer, criterion, scheduler, train_loader, val_loader =accelerator.prepare(teacher, optimizer, criterion, scheduler, train_loader, val_loader)
+if __name__ == '__main__':
 
-engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+    engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
 
 wandb_tracker = accelerator.get_tracker("wandb")
 wandb_tracker.finish()

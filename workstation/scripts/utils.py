@@ -68,7 +68,7 @@ class datasetSplitter:
         test_sampler = SubsetRandomSampler(test_indices)
 
         # Create data loaders
-        self.train_loader = DataLoader(self.dataset, batch_size=self.batch_size ,sampler=train_sampler)
-        self.test_loader = DataLoader(self.dataset, batch_size=self.batch_size, sampler=test_sampler)
+        self.train_loader = DataLoader(self.dataset, batch_size=self.batch_size ,sampler=train_sampler, num_workers=4)
+        self.test_loader = DataLoader(self.dataset, batch_size=self.batch_size, sampler=test_sampler, num_workers=4)
 
         return self.train_loader, self.test_loader
