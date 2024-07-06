@@ -1,0 +1,70 @@
+Processing:   0%|                                                                               | 0/695 [00:00<?, ?it/s]
+Processing:   0%|                                                                                 | 0/4 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 111, in <module>
+    engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 79, in engine
+    epoch_train_metrics=train_step(model,train_loader,criterion,optimizer,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 36, in train_step
+    for batch,(images,masks) in enumerate(tqdm(dataloader)):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/supervisely/task/progress.py", line 453, in __iter__
+    yield from super().__iter__()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/accelerate/data_loader.py", line 454, in __iter__
+    current_batch = next(dataloader_iter)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/_utils.py", line 705, in reraise
+    raise exception
+IndexError: Caught IndexError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/segmentationDataset.py", line 40, in __getitem__
+    mask=maskprocessor.process_png_mask(np.array(mask))
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/utils.py", line 45, in process_png_mask
+    one_hot_mask[binary_mask] = class_index
+IndexError: boolean index did not match indexed array along dimension 0; dimension is 19 but corresponding boolean dimension is 8
+Traceback (most recent call last):
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 111, in <module>
+    engine(teacher,train_loader,val_loader,criterion,optimizer,scheduler,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 79, in engine
+    epoch_train_metrics=train_step(model,train_loader,criterion,optimizer,accelerator)
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 36, in train_step
+    for batch,(images,masks) in enumerate(tqdm(dataloader)):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/supervisely/task/progress.py", line 453, in __iter__
+    yield from super().__iter__()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/accelerate/data_loader.py", line 454, in __iter__
+    current_batch = next(dataloader_iter)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/_utils.py", line 705, in reraise
+    raise exception
+IndexError: Caught IndexError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/gaston/Documents/icreatemodels/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/segmentationDataset.py", line 40, in __getitem__
+    mask=maskprocessor.process_png_mask(np.array(mask))
+  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/utils.py", line 45, in process_png_mask
+    one_hot_mask[binary_mask] = class_index
+IndexError: boolean index did not match indexed array along dimension 0; dimension is 19 but corresponding boolean dimension is 8

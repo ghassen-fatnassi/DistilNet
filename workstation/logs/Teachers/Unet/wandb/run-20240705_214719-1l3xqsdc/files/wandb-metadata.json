@@ -1,0 +1,60 @@
+{
+    "os": "Linux-5.15.0-102-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "heartbeatAt": "2024-07-05T20:47:20.991799",
+    "startedAt": "2024-07-05T20:47:19.398626",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py",
+    "codePathLocal": "train.py",
+    "codePath": "workstation/scripts/train.py",
+    "git": {
+        "remote": "git@github.com:ghassen-fatnassi/ACTIA.git",
+        "commit": "347e1507f845d72bdc9e0c8c29fdbc387577614c"
+    },
+    "email": "oneinbillion77@gmail.com",
+    "root": "/media/gaston/gaston1/DEV/ACTIA",
+    "host": "gaston-Lenovo-IdeaPad-L340-15API",
+    "username": "gaston",
+    "executable": "/home/gaston/Documents/icreatemodels/bin/python",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2391.04925,
+        "min": 1400.0,
+        "max": 2600.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2600.0,
+            "min": 1400.0,
+            "max": 2600.0
+        },
+        {
+            "current": 2394.072,
+            "min": 1400.0,
+            "max": 2600.0
+        },
+        {
+            "current": 2387.872,
+            "min": 1400.0,
+            "max": 2600.0
+        },
+        {
+            "current": 2388.171,
+            "min": 1400.0,
+            "max": 2600.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 95.37606048583984,
+            "used": 59.951805114746094
+        }
+    },
+    "memory": {
+        "total": 3.2037391662597656
+    }
+}

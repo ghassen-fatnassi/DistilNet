@@ -1,0 +1,1 @@
+{"train": {"loss": -0.020529639978202986, "iou": 0.0, "dice": 0.0, "f1": 0.0, "accuracy": 0.0, "precision": 0.0, "recall": 0.0}, "val": {"loss": -0.08230055337664725, "iou": 0.0, "dice": 0.0, "f1": 0.0, "accuracy": 0.0, "precision": 0.0, "recall": 0.0}, "_timestamp": 1720200835.2560687, "_runtime": 438.5511267185211, "_step": 3, "_wandb": {"runtime": 437}}

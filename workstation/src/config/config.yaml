@@ -1,0 +1,52 @@
+paths:
+  datasets: "FOR-ACTIA/FF/datasets"
+
+dataset:
+  name: "cityscapes"
+  train_imgs_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/leftImg8bit/train"
+  train_masks_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/gtFine/train"
+  test_imgs_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/leftImg8bit/test"
+  test_masks_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/gtFine/test"
+  img_type: "png"
+  mask_type: "png"
+  num_classes: 19
+  class_weights: [
+      1.0, # road
+      1.5, # sidewalk
+      1.0, # building
+      2.0, # wall
+      2.0, # fence
+      2.0, # pole
+      3.0, # traffic light
+      3.0, # traffic sign
+      1.0, # vegetation
+      2.0, # terrain
+      1.5, # sky
+      3.0, # person
+      3.0, # rider
+      1.0, # car
+      3.0, # truck
+      3.0, # bus
+      3.0, # train
+      3.0, # motorcycle
+      3.0, # bicycle
+    ]
+
+resize:
+  H: 128
+  W: 256
+
+log_dir:
+
+hyperparameters:
+  batch_size: 16
+  lr: 0.003
+  epochs: 10
+  step_size: 8
+  gamma: 0.1
+
+accel_config:
+  mixed_precision: "fp16"
+
+API_KEYS:
+  wandb: "960c7d1edaf53d6de7137290cfcbbc610b77fc67"
