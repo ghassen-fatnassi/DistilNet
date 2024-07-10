@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
-from config.config_loader import load_yaml
+from utils import load_yaml
+
 cfg = load_yaml()
 
-class BasicCELoss(nn.Module):
+class WeightedCELoss(nn.Module):
     """Cross-entropy loss without any augmentation."""
     def __init__(self):
-        super(BasicCELoss, self).__init__()
+        super(WeightedCELoss, self).__init__()
         self.weights=torch.tensor(cfg['dataset']['class_weights'])
 
     def forward(self, out_mask, true_mask, temperature=1):
@@ -20,11 +21,17 @@ class BasicCELoss(nn.Module):
 
         return loss
 
-class BasicDistillationLoss(nn.Module):
+class TverskyCEDiceWeightedLoss(nn.Module):
+    def __init__(self):
+        pass
+    def forward(self):
+        pass
+
+class WeightedDistillationLoss(nn.Module):
     """Distillation loss."""
     def __init__(self,temperature,alpha=0.5):
-        super(BasicDistillationLoss, self).__init__()
-        self.ce_loss = BasicCELoss()
+        super(WeightedDistillationLoss, self).__init__()
+        self.ce_loss = WeightedCELoss()
 
     def forward(self, true_mask, student_out, teacher_out, temperature, alpha=0.5):
 

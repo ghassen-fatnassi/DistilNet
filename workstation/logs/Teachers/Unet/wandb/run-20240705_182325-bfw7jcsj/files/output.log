@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 106, in <module>
-    teacher, optimizer, criterion, scheduler, train_loader, val_loader, device =accelerator.prepare(teacher, optimizer, criterion, scheduler, train_loader, val_loader)
-ValueError: not enough values to unpack (expected 7, got 6)
-Traceback (most recent call last):
-  File "/media/gaston/gaston1/DEV/ACTIA/workstation/scripts/train.py", line 106, in <module>
-    teacher, optimizer, criterion, scheduler, train_loader, val_loader, device =accelerator.prepare(teacher, optimizer, criterion, scheduler, train_loader, val_loader)
-ValueError: not enough values to unpack (expected 7, got 6)

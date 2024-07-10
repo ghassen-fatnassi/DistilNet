@@ -3,6 +3,14 @@ from PIL import Image
 
 from torch.utils.data import DataLoader, SubsetRandomSampler, TensorDataset
 from sklearn.model_selection import train_test_split
+import yaml
+import json
+
+"""loading config file"""
+def load_yaml(config_path="./config/config.yaml"):
+    with open(config_path,'r') as file:
+        config=yaml.safe_load(file)
+    return config
 
 """mask processing"""
 class cityscapesMaskProcessor:
@@ -29,6 +37,11 @@ class cityscapesMaskProcessor:
             (0, 0, 230) ,   # Motorcycle
             (119, 11, 32) ,  # Bicycle
         ]
+        self.class_labels = {0:'road',1:'sidewalk',2:'building',3:'wall',
+                             4:'fence',5:'pole',6:'traffic light',7:'traffic sign',
+                             8:'vegetation',9:'terrain',10:'sky',11:'person',12:'rider',
+                             13:'car',14:'truck',15:'bus',16:'train',17:'motorcycle',
+                             18:'bicycle'}
 
 
     def process_png_mask(self, mask):

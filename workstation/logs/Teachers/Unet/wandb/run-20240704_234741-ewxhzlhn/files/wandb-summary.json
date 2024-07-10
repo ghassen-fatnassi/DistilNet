@@ -1,1 +1,0 @@
-{"_wandb": {"runtime": 770}, "train": {"loss": -0.27478273240782375, "iou": 0.0, "dice": 0.0, "f1": 0.0, "accuracy": 0.0, "precision": 0.0, "recall": 0.0}, "val": {"loss": -1.0995577231220814, "iou": 0.0, "dice": 0.0, "f1": 0.0, "accuracy": 0.0, "precision": 0.0, "recall": 0.0}, "_timestamp": 1720134007.530099, "_runtime": 746.100478887558, "_step": 0}

@@ -1,64 +1,100 @@
-# Project Outline: Semantic Segmentation Model Distillation for Autonomous Driving
+# Autonomous Driving Segmentation Task 🚗🎨
 
-## 1. Understanding the Task
+This project focuses on segmentation tasks for autonomous driving using the Cityscapes dataset. It supports distributed training and mixed precision and includes a logging mechanism with WandB to log important metrics.
 
-- Define the objective and goals of distilling a semantic segmentation model for autonomous driving.
+## Folder Structure 📂
 
-## 2. Preliminary Research
+```
+workstation
+├── 📁 data
+│   └── 📁 cityscapes
+│       ├── 📁 images 🖼️ (contains the dataset images)
+│       └── 📁 masks 🎭 (contains the dataset masks)
+├── 📁 logs 📝
+│   └── 📁 wandb 📊 (contains the WandB logs)
+├── 📁 models 🤖
+│   ├── 📁 Students 👩‍🎓 (contains the student models in pth format)
+│   └── 📁 Teachers 👨‍🏫 (contains the teacher models in pth format)
+├── 📁 src 📦
+│   ├── 📁 config 🛠️
+│   │   ├── 📄 config.yaml 📝 (contains the project configuration)
+│   │   ├── 📄 SegFormer.yaml 📝 (contains the SegFormer model configuration)
+│   │   └── 📄 UNet.yaml 📝 (contains the UNet model configuration)
+│   ├── 📁 models 🤖
+│   │   └── 📄 UNet.py 📝 (contains the UNet model implementation)
+│   └── 📁 training 🏋️‍♂️
+│       ├── 📄 train.py 📝 (contains the training script)
+│       ├── 📄 engine.py 📝 (contains the training engine)
+│       ├── 📄 dataset.py 📝 (contains the dataset class)
+│       ├── 📄 loss.py 📝 (contains the custom loss functions)
+│       ├── 📄 distill.py 📝 (contains the distillation logic)
+│       ├── 📄 utils.py 📝 (contains utility functions)
+│       └── 📄 init.py 📝 (contains initialization code)
+├── 📄 .gitignore 📝
+├── 📄 LICENSE 📝
+├── 📄 README.md 📝
+├── 📄 requirements.txt 📝
+└── 📄 x.ipynb 📝
+```
 
-- Conduct a literature review on semantic segmentation and model distillation.
-- Identify key papers and recent advancements in the field.
+## Done ✅
 
-## 3. Setting Up the Environment
+- Downloaded and structured the Cityscapes dataset (images and masks).
+- Created a `Dataset` class to handle dataset intricacies for future customization if I ever introduce new datasets.
+- Developed a `DataSplitter` class to create train and validation dataloaders with random sampling.
+- Made the project modular with custom loss functions, custom models, and configuration files.
+- Implemented logging with WandB to track metrics like loss, IOU, F1, recall, and mAP.
+- Supports distributed training.
 
-### Tools and Frameworks
+## To Do 📝
 
-- Python
-- Deep Learning Framework: PyTorch or TensorFlow
-- Experiment Tracking: Weights & Biases, MLflow, or TensorBoard
-- Version Control: Git
-- Data Handling: OpenCV, NumPy, Pandas
-- Visualization: Matplotlib, Seaborn
+- Log images through epochs, layers, and between models to gain insights into model performance on images.
 
-## 4. Data Preparation
+## Doing 🛠️
 
-- Acquire and preprocess a high-quality dataset suitable for autonomous driving.
-- Implement data cleaning and augmentation techniques.
+- Ongoing improvements and bug fixes.
+- Adding additional logging and visualization features.
+- Supporting mixed precision through configuration files.
 
-## 5. Baseline Model Training
+## Configuration and Dependencies 🛠️
 
-### Large U-Net
+- **Frameworks:** PyTorch, Accelerate
+- **Logging:** WandB
 
-- Train the large U-Net model on the prepared dataset.
-- Experiment with hyperparameters and evaluate using appropriate metrics.
+## Example Image 🖼️
 
-## 6. Distillation Process
+Here is an example of an image similar to what the project handles in segmentation tasks:
 
-- Define teacher (large U-Net) and student (small U-Net) models.
-- Implement distillation loss functions and strategies.
+![Segmentation Example](https://www.cityscapes-dataset.com/example_image.png)
 
-## 7. Training the Student Model
+## Usage 🚀
 
-- Train the small U-Net from scratch as a baseline.
-- Apply knowledge distillation techniques and fine-tune hyperparameters.
+1. **Clone the repository:**
 
-## 8. Evaluation and Comparison
+```bash
+git clone <repository_url>
+cd <repository_name>
+```
 
-- Compare performance metrics of the small U-Net with the large U-Net.
-- Conduct ablation studies and analyze results.
+2. **Install the dependencies:**
 
-## 9. Experiment Tracking
+```bash
+pip install -r requirements.txt
+```
 
-- Utilize tools like Weights & Biases or TensorBoard for experiment logging and visualization.
+3. **Prepare the dataset:**
+   Place the Cityscapes dataset images and masks in the `data/cityscapes` folder.
 
-## 10. Optimization and Fine-Tuning
+4. **Run training:**
 
-- Explore model pruning, quantization, and regularization techniques.
-- Optimize for inference speed and model size.
+```bash
+python src/training/train.py --config src/config/config.yaml
+```
 
-## 11. Deployment and Testing
+## Contributing 🤝
 
-- Test the distilled model in a real-time simulation environment.
-- Deploy the model on edge devices and assess performance.
+Feel free to open issues or submit pull requests with improvements.
 
-## 12. Interface Integration with Rerun.io
+## License 📄
+
+This project is licensed under the MIT License.

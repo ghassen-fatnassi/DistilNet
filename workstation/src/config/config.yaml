@@ -1,15 +1,13 @@
-paths:
-  datasets: "FOR-ACTIA/FF/datasets"
-
 dataset:
   name: "cityscapes"
-  train_imgs_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/leftImg8bit/train"
-  train_masks_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/gtFine/train"
-  test_imgs_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/leftImg8bit/test"
-  test_masks_dir: "/media/gaston/gaston1/DEV/ACTIA/workstation/datasets/cityscapes/gtFine/test"
+  train_imgs_dir: "../data/cityscapes/images/train"
+  train_masks_dir: "../data/cityscapes/masks/train"
+  test_imgs_dir: "../data/cityscapes/images/test"
+  test_masks_dir: "../data/cityscapes/masks/test"
   img_type: "png"
   mask_type: "png"
   num_classes: 19
+  class_labels:
   class_weights: [
       1.0, # road
       1.5, # sidewalk
@@ -31,22 +29,13 @@ dataset:
       3.0, # motorcycle
       3.0, # bicycle
     ]
+  resize: [32, 16] # [width,height]
 
-resize:
-  H: 128
-  W: 256
+wandb:
+  API_KEY: "960c7d1edaf53d6de7137290cfcbbc610b77fc67"
+  silent: "true" # true or false
 
-log_dir:
-
-hyperparameters:
-  batch_size: 16
-  lr: 0.003
-  epochs: 10
-  step_size: 8
-  gamma: 0.1
-
-accel_config:
-  mixed_precision: "fp16"
-
-API_KEYS:
-  wandb: "960c7d1edaf53d6de7137290cfcbbc610b77fc67"
+paths:
+  cfg:
+    Unet: "config/Unet.yaml"
+    SegFormer: "config/SegFormer.yaml"
