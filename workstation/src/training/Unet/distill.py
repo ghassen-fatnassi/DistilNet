@@ -31,17 +31,18 @@ num_classes = cfg['dataset']['num_classes']
 in_channels = Unet_cfg['distillation']['in_channels']
 depth = Unet_cfg['distillation']['depth']
 start_filts = Unet_cfg['distillation']['start_filts']
-Student = segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+student = segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 
 # Teacher Model configuration
 in_channels = Unet_cfg['training']['in_channels']
 depth = Unet_cfg['training']['depth']
 start_filts = Unet_cfg['training']['start_filts']
-Teacher= segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+teacher= segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+teacher.load_state_dict(torch.load(Unet_cfg['distillation']['teacher_weight_dir']))
 
 # Optimizer
 lr = Unet_cfg['distillation']['lr']
-optimizer = AdamW(Student.parameters(), lr=lr)
+optimizer = AdamW(student.parameters(), lr=lr)
 
 # Scheduler
 factor = Unet_cfg['distillation']['factor']
@@ -56,6 +57,16 @@ accelerator = Accelerator(log_with="wandb")
 accelerator.init_trackers(project_name="ACTIA", config={'student':Unet_cfg['distillation'],'teacher':Unet_cfg['training']})
 
 # Prepare model and data for accelerator
-Student, Teacher, optimizer, criterion, scheduler, train_loader, val_loader = accelerator.prepare(
-    Student, Teacher, optimizer, criterion, scheduler, train_loader, val_loader
+student, Teacher, optimizer, criterion, scheduler, train_loader, val_loader = accelerator.prepare(
+    student, teacher, optimizer, criterion, scheduler, train_loader, val_loader
 )
+
+# Training the model
+if __name__ == '__main__':
+    engine(student,teacher, train_loader, val_loader, criterion, optimizer, scheduler, accelerator,epochs=Unet_cfg['training']['epochs'],img_sampling_index=9)
+    accelerator.wait_for_everyone()
+
+"""saving the model"""
+if(Unet_cfg['training']['save']):
+    accelerator.save(student, f"{Unet_cfg['distillation']['save_dir']}{json.dumps({'student':Unet_cfg['distillation'],'teacher':Unet_cfg['training']})}.pth")
+    

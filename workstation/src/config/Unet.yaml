@@ -9,7 +9,7 @@ training:
   factor: 0.1
   patience: 10
   save: False
-  save_dir: "../models/Teachers/Unet"
+  save_dir: "../../models/Teachers/Unet"
   log_dir: "../../logs/Teachers/Unet"
 distillation:
   depth: 2
@@ -25,5 +25,5 @@ distillation:
   patience: 10
   save: False
   teacher_weight_dir: "../../models/Teachers/Unet"
-  save_dir: "../models/Students/Unet"
+  save_dir: "../../models/Students/Unet"
   log_dir: "../../logs/Students/Unet"

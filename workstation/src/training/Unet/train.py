@@ -62,5 +62,5 @@ if __name__ == '__main__':
 
 """saving the model"""
 if(Unet_cfg['training']['save']):
-    accelerator.save(teacher, f"{Unet_cfg['training']['save_dir']}{json.dumps(Unet_cfg['training'])}.pth")
+    accelerator.save(teacher, f"TEACHER_UNET::::{Unet_cfg['training']['save_dir']}::::{json.dumps(Unet_cfg['training'])}.pth")
     
