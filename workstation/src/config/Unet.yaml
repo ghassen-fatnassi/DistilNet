@@ -18,6 +18,8 @@ distillation:
   batch_size: 10
   epochs: 10
   lr: 0.01
+  temperature: 3
+  alpha: 0.8 #weight of the teacher loss
   #only using reduce on plateau for now
   factor: 0.1
   patience: 10
