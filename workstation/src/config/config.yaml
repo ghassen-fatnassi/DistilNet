@@ -1,9 +1,7 @@
 dataset:
   name: "cityscapes"
-  train_imgs_dir: "../data/cityscapes/images/train"
-  train_masks_dir: "../data/cityscapes/masks/train"
-  test_imgs_dir: "../data/cityscapes/images/test"
-  test_masks_dir: "../data/cityscapes/masks/test"
+  train_imgs_dir: "../data/cityscapes/images"
+  train_masks_dir: "../data/cityscapes/masks"
   img_type: "png"
   mask_type: "png"
   num_classes: 19

@@ -8,15 +8,14 @@ from PIL import Image
 from utils import cityscapesMaskProcessor,load_yaml
 
 class SegDataset(Dataset):
-    def __init__(self, config=None, mode='train'):# mode is either train_val or test
+    def __init__(self, config=None):# mode is either train_val or test
         super().__init__()
         if config is None:
             config = load_yaml()
         self.cfg = config
-        self.mode = mode
 
-        self.img_dir = Path(self.cfg['dataset'][f'{mode}_imgs_dir'])
-        self.mask_dir = Path(self.cfg['dataset'][f'{mode}_masks_dir'])
+        self.img_dir = Path(self.cfg['dataset'][f'train_imgs_dir'])
+        self.mask_dir = Path(self.cfg['dataset'][f'train_masks_dir'])
 
         self.img_paths = sorted(list(self.img_dir.glob('*.'+self.cfg['dataset']['img_type'])))
         self.mask_paths = sorted(list(self.mask_dir.glob('*color.'+self.cfg['dataset']['mask_type'])))

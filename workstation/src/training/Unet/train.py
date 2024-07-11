@@ -4,12 +4,11 @@ from torch.optim import Adam, SGD, AdamW, Adamax
 from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
 from accelerate import Accelerator
 
-
 from dataset import SegDataset
 from utils import datasetSplitter, load_yaml
 import loss as loss
 from models.Unet import segUnet
-from engine import engine
+from teacher_engine import engine
 import wandb
 import os
 import json
@@ -25,9 +24,8 @@ os.environ["WANDB_DIR"] = Unet_cfg['training']['log_dir']
 
 # Dataset and DataLoaders configuration
 batch_size = Unet_cfg['training']['batch_size']
-data_mode = 'train'
-data = SegDataset(mode=data_mode)
-train_loader, val_loader = datasetSplitter(data, batch_size).split()
+data = SegDataset()
+train_loader, val_loader = datasetSplitter(data, batch_size).split() # if i wanna change the split , i just gotta change random seed in here
 
 # Model configuration
 num_classes = cfg['dataset']['num_classes']
