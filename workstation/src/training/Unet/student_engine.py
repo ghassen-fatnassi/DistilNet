@@ -7,6 +7,7 @@ from segmentation_models_pytorch.metrics import iou_score, f1_score, recall, get
 
 # Loading configuration file
 cfg = load_yaml()
+Unet_cfg = load_yaml(cfg['paths']['cfg']['Unet'])
 
 def return_loggable_imgs(images, masks):
     if isinstance(images, torch.Tensor):
@@ -26,7 +27,7 @@ def return_loggable_imgs(images, masks):
 def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
     tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.5)  # threshold rounds the output to 0 or 1
-    metrics['loss'] = criterion(student_outputs, masks, teacher_outputs, cfg['distillation']['temperature'], cfg['distillation']['alpha'])
+    metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
     metrics['miou'] = iou_score(tp, fp, fn, tn)
     metrics['f1'] = f1_score(tp, fp, fn, tn)
     metrics['recall'] = recall(tp, fp, fn, tn)

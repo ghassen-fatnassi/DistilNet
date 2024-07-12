@@ -44,11 +44,8 @@ class cityscapesMaskProcessor:
                              18:'bicycle'}
 
 
-    def process_png_mask(self, mask):
-
-        """remove alpha channel"""
-        mask=mask[:,:,:3] 
-
+    def one_hotting_mask(self, mask):
+        mask=mask[:,:,:3] # remove alpha channel
         height, width = mask.shape[:2]
         num_classes = len(self.color_map)
         one_hot_mask = np.zeros((num_classes, height, width), dtype=np.uint8)
@@ -59,6 +56,17 @@ class cityscapesMaskProcessor:
 
         return one_hot_mask
 
+class bdd10kMaskProcessor(cityscapesMaskProcessor):
+    def __init__(self):
+        super().__init__()
+    def one_hotting_mask(self,mask):
+        height,width=mask.shape
+        num_classes=len(self.color_map)
+        one_hot_mask=np.zeros((num_classes,height,width),dtype=np.uint8)
+        for class_index,color in enumerate(self.color_map):
+            binary_mask=mask==class_index
+            one_hot_mask[class_index]=binary_mask        
+        return one_hot_mask
 class datasetSplitter:
     def __init__(self, dataset, batch_size, test_split=0.2, random_seed=5000):
         self.dataset = dataset

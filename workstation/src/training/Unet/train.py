@@ -3,10 +3,12 @@ from torch.utils.data import DataLoader, random_split
 from torch.optim import Adam, SGD, AdamW, Adamax
 from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
 from accelerate import Accelerator
+import safetensors.torch
+
 
 from dataset import SegDataset
 from utils import datasetSplitter, load_yaml
-import loss as loss
+import loss
 from models.Unet import segUnet
 from teacher_engine import engine
 import wandb
@@ -60,7 +62,19 @@ if __name__ == '__main__':
     engine(teacher, train_loader, val_loader, criterion, optimizer, scheduler, accelerator,epochs=Unet_cfg['training']['epochs'],img_sampling_index=9)
     accelerator.wait_for_everyone()
 
+
+
 """saving the model"""
 if(Unet_cfg['training']['save']):
-    accelerator.save(teacher, f"TEACHER_UNET::::{Unet_cfg['training']['save_dir']}::::{json.dumps(Unet_cfg['training'])}.pth")
+    depth=Unet_cfg['training']['depth']
+    in_channels=Unet_cfg['training']['in_channels']
+    start_filts=Unet_cfg['training']['start_filts']
+    batch_size=Unet_cfg['training']['batch_size']
+    epochs=Unet_cfg['training']['epochs']
+    lr=Unet_cfg['training']['lr']
+    name=f"{Unet_cfg['training']['save_dir']}/depth{depth}_in{in_channels}_start{start_filts}_batch{batch_size}_epochs{epochs}_lr{lr}.safetensors"
+    with open(name, "w") as f:
+        pass
+    unwrapped_teacher = accelerator.unwrap_model(teacher)
+    safetensors.torch.save_file(unwrapped_teacher.state_dict(), name)
     

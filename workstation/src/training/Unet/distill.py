@@ -4,6 +4,7 @@ from torch.optim import Adam, SGD, AdamW, Adamax
 from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
 from accelerate import Accelerator
 from dataset import SegDataset
+import safetensors.torch
 from utils import datasetSplitter, load_yaml
 import loss as loss
 from models.Unet import segUnet
@@ -38,7 +39,7 @@ in_channels = Unet_cfg['training']['in_channels']
 depth = Unet_cfg['training']['depth']
 start_filts = Unet_cfg['training']['start_filts']
 teacher= segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
-teacher.load_state_dict(torch.load(Unet_cfg['distillation']['teacher_weight_dir']))
+teacher.load_state_dict(safetensors.torch.load_file(Unet_cfg['distillation']['teacher_weight_dir']))
 
 # Optimizer
 lr = Unet_cfg['distillation']['lr']
@@ -50,7 +51,7 @@ patience = Unet_cfg['distillation']['patience']
 scheduler = ReduceLROnPlateau(optimizer, factor=factor, patience=patience)
 
 # Loss function
-criterion = loss.WeightedCELoss()
+criterion = loss.WeightedDistillationLoss(Unet_cfg['distillation']['temperature'], Unet_cfg['distillation']['alpha'])
 
 # Accelerator setup
 accelerator = Accelerator(log_with="wandb")
@@ -67,6 +68,23 @@ if __name__ == '__main__':
     accelerator.wait_for_everyone()
 
 """saving the model"""
-if(Unet_cfg['training']['save']):
-    accelerator.save(student, f"{Unet_cfg['distillation']['save_dir']}{json.dumps({'student':Unet_cfg['distillation'],'teacher':Unet_cfg['training']})}.pth")
-    
+if(Unet_cfg['distillation']['save']):
+    student_depth=Unet_cfg['distillation']['depth']
+    student_in_channels=Unet_cfg['distillation']['in_channels']
+    student_start_filts=Unet_cfg['distillation']['start_filts']
+    student_batch_size=Unet_cfg['distillation']['batch_size']
+    student_epochs=Unet_cfg['distillation']['epochs']
+    student_lr=Unet_cfg['distillation']['lr']
+
+    teacher_depth=Unet_cfg['training']['depth']
+    teacher_in_channels=Unet_cfg['training']['in_channels']
+    teacher_start_filts=Unet_cfg['training']['start_filts']
+    teacher_batch_size=Unet_cfg['training']['batch_size']
+    teacher_epochs=Unet_cfg['training']['epochs']
+    teacher_lr=Unet_cfg['training']['lr']
+
+    name=f"{Unet_cfg['training']['save_dir']}/:::STUDENT:::depth{student_depth}_in{student_in_channels}_start{student_start_filts}_batch{student_batch_size}_epochs{student_epochs}_lr{student_lr}:::TEACHER:::depth{student_depth}_in{teacher_in_channels}_start{teacher_start_filts}_batch{teacher_batch_size}_epochs{teacher_epochs}_lr{teacher_lr}.safetensors"
+    with open(name, "w") as f:
+        pass
+    unwrapped_student = accelerator.unwrap_model(student)
+    safetensors.torch.save_file(unwrapped_student.state_dict(), name)

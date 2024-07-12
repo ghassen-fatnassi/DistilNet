@@ -1,8 +1,8 @@
 dataset:
   name: "cityscapes"
-  train_imgs_dir: "../data/cityscapes/images"
-  train_masks_dir: "../data/cityscapes/masks"
-  img_type: "png"
+  train_imgs_dir: "../data/bdd100k/images"
+  train_masks_dir: "../data/bdd100k/labels"
+  img_type: "jpg"
   mask_type: "png"
   num_classes: 19
   class_labels:

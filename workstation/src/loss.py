@@ -32,12 +32,13 @@ class WeightedDistillationLoss(nn.Module):
     def __init__(self,temperature,alpha=0.5):
         super(WeightedDistillationLoss, self).__init__()
         self.ce_loss = WeightedCELoss()
+        self.temperature = temperature
+        self.alpha = alpha
+    def forward(self, student_out,true_mask, teacher_out):
 
-    def forward(self, student_out,true_mask, teacher_out, temperature, alpha):
-
-        soft_loss = self.ce_loss(student_out, teacher_out, temperature) * (temperature ** 2)
+        soft_loss = self.ce_loss(student_out, teacher_out, self.temperature) * (self.temperature ** 2)
         hard_loss = self.ce_loss(student_out, true_mask)
 
-        loss = alpha * soft_loss + (1 - alpha) * hard_loss
+        loss = self.alpha * soft_loss + (1 - self.alpha) * hard_loss
 
         return loss
