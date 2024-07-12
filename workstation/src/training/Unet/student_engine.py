@@ -29,6 +29,7 @@ def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.5)  # threshold rounds the output to 0 or 1
     metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
     metrics['miou'] = iou_score(tp, fp, fn, tn)
+    print(metrics['miou'])
     metrics['f1'] = f1_score(tp, fp, fn, tn)
     metrics['recall'] = recall(tp, fp, fn, tn)
     return metrics

@@ -8,7 +8,7 @@ training:
   #only using reduce on plateau for now
   factor: 0.1
   patience: 10
-  save: True
+  save: False
   save_dir: "../Models/Teachers/Unet"
   log_dir: "../logs/Teachers/Unet"
 distillation:
