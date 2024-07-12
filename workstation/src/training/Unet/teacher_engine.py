@@ -29,9 +29,9 @@ def return_batch_metrics(criterion, outputs, masks):
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
     tp, fp, fn, tn = get_stats(outputs, masks, mode='multilabel', threshold=0.5)
     metrics['loss'] = criterion(outputs, masks)
-    metrics['miou'] = iou_score(tp, fp, fn, tn)
-    metrics['f1'] = f1_score(tp, fp, fn, tn)
-    metrics['recall'] = recall(tp, fp, fn, tn)
+    metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
+    metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
+    metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro-imagewise")
     return metrics
 
 def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
@@ -50,7 +50,7 @@ def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
         optimizer.step()
         
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch}, step=last_batch * epoch + batch)
+        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch+1})
 
         for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch
@@ -75,7 +75,7 @@ def val_step(model, dataloader, criterion, accelerator, epoch, img_sampling_inde
                 batch_metrics = return_batch_metrics(criterion, outputs, masks)
         
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch}, step=last_batch * epoch + batch)
+        accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch+1})
 
         for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch

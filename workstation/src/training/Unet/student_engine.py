@@ -28,10 +28,9 @@ def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
     tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.5)  # threshold rounds the output to 0 or 1
     metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
-    metrics['miou'] = iou_score(tp, fp, fn, tn)
-    print(metrics['miou'])
-    metrics['f1'] = f1_score(tp, fp, fn, tn)
-    metrics['recall'] = recall(tp, fp, fn, tn)
+    metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
+    metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
+    metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro-imagewise")
     return metrics
 
 def train_step(student, teacher, dataloader, criterion, optimizer, accelerator, epoch):
@@ -52,7 +51,7 @@ def train_step(student, teacher, dataloader, criterion, optimizer, accelerator, 
         optimizer.step()
 
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch}, step=last_batch * epoch + batch)
+        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch+1})
 
         for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch
@@ -78,7 +77,7 @@ def val_step(student, teacher, dataloader, criterion, accelerator, epoch, img_sa
                 batch_metrics = return_batch_metrics(criterion, teacher_outputs, student_outputs, masks)
         
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch}, step=last_batch * epoch + batch)
+        accelerator.log({"val_batches": batch_metrics,"batch":last_batch * epoch + batch+1})
 
         for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch

@@ -3,7 +3,7 @@ training:
   in_channels: 3
   start_filts: 4
   batch_size: 10
-  epochs: 1
+  epochs: 15
   lr: 0.001
   #only using reduce on plateau for now
   factor: 0.1
