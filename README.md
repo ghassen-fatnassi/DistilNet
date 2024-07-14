@@ -1,100 +1,88 @@
-# Autonomous Driving Segmentation Task 🚗🎨
+# Presentation 📊
 
-This project focuses on segmentation tasks for autonomous driving using the Cityscapes dataset. It supports distributed training and mixed precision and includes a logging mechanism with WandB to log important metrics.
+<details>
+<summary>## Brief Intro 🌟</summary>
 
-## Folder Structure 📂
+- **Distillation x Segmentation**: An overview of how distillation techniques are applied to segmentation tasks.
 
-```
-workstation
-├── 📁 data
-│   └── 📁 cityscapes
-│       ├── 📁 images 🖼️ (contains the dataset images)
-│       └── 📁 masks 🎭 (contains the dataset masks)
-├── 📁 logs 📝
-│   └── 📁 wandb 📊 (contains the WandB logs)
-├── 📁 models 🤖
-│   ├── 📁 Students 👩‍🎓 (contains the student models in pth format)
-│   └── 📁 Teachers 👨‍🏫 (contains the teacher models in pth format)
-├── 📁 src 📦
-│   ├── 📁 config 🛠️
-│   │   ├── 📄 config.yaml 📝 (contains the project configuration)
-│   │   ├── 📄 SegFormer.yaml 📝 (contains the SegFormer model configuration)
-│   │   └── 📄 UNet.yaml 📝 (contains the UNet model configuration)
-│   ├── 📁 models 🤖
-│   │   └── 📄 UNet.py 📝 (contains the UNet model implementation)
-│   └── 📁 training 🏋️‍♂️
-│       ├── 📄 train.py 📝 (contains the training script)
-│       ├── 📄 engine.py 📝 (contains the training engine)
-│       ├── 📄 dataset.py 📝 (contains the dataset class)
-│       ├── 📄 loss.py 📝 (contains the custom loss functions)
-│       ├── 📄 distill.py 📝 (contains the distillation logic)
-│       ├── 📄 utils.py 📝 (contains utility functions)
-│       └── 📄 init.py 📝 (contains initialization code)
-├── 📄 .gitignore 📝
-├── 📄 LICENSE 📝
-├── 📄 README.md 📝
-├── 📄 requirements.txt 📝
-└── 📄 x.ipynb 📝
-```
+</details>
 
-## Done ✅
+<details>
+<summary>## Done ✅</summary>
 
-- Downloaded and structured the Cityscapes dataset (images and masks).
-- Created a `Dataset` class to handle dataset intricacies for future customization if I ever introduce new datasets.
-- Developed a `DataSplitter` class to create train and validation dataloaders with random sampling.
-- Made the project modular with custom loss functions, custom models, and configuration files.
-- Implemented logging with WandB to track metrics like loss, IOU, F1, recall, and mAP.
-- Supports distributed training.
+<details>
+<summary>### Research 📚</summary>
 
-## To Do 📝
+- **Original Paper**: Summarized insights and key points.
+- **Deep Dive into CE Loss and Dark Knowledge**: Understanding cross-entropy loss and the concept of dark knowledge in distillation.
+- **Various Paradigms of Distillation**: Exploring different distillation approaches.
 
-- Log images through epochs, layers, and between models to gain insights into model performance on images.
+</details>
 
-## Doing 🛠️
+<details>
+<summary>### Model 🧠</summary>
 
-- Ongoing improvements and bug fixes.
-- Adding additional logging and visualization features.
-- Supporting mixed precision through configuration files.
+- **UNet Choice Explanation**: Justification for choosing the UNet architecture for the task.
 
-## Configuration and Dependencies 🛠️
+</details>
 
-- **Frameworks:** PyTorch, Accelerate
-- **Logging:** WandB
+<details>
+<summary>### Data 📈</summary>
 
-## Example Image 🖼️
+- **BDD100K + Cityscapes & Class Imbalance Problem**: Analysis of the datasets used and the challenge of class imbalance.
 
-Here is an example of an image similar to what the project handles in segmentation tasks:
+</details>
 
-![Segmentation Example](https://www.cityscapes-dataset.com/example_image.png)
+<details>
+<summary>### Code 💻</summary>
 
-## Usage 🚀
+- **Working Code for Training & Distillation of UNet Model (PyTorch)**: Implementation details.
+- **Distributed Training Option (Accelerate)**: Configuration for distributed training.
+- **Logging All Chosen Model Metrics, Hardware Consumption via API (wandb)**: Monitoring and logging setup.
+- **Tested 10 Epochs on GTX 1660 TI**: Initial performance testing.
 
-1. **Clone the repository:**
+</details>
 
-```bash
-git clone <repository_url>
-cd <repository_name>
-```
+</details>
 
-2. **Install the dependencies:**
+<details>
+<summary>## Doing 🔄</summary>
 
-```bash
-pip install -r requirements.txt
-```
+<details>
+<summary>### Research 🧐</summary>
 
-3. **Prepare the dataset:**
-   Place the Cityscapes dataset images and masks in the `data/cityscapes` folder.
+- **Thinking About a Loss Function for the Teacher Model that Favors Teaching & Performance (High Entropy Output)**: Developing a specialized loss function.
+- **Deciding on Distillation Paradigm for UNet (Decoder, Encoder, Bottleneck)**: Selecting the most suitable distillation approach for UNet.
+- **Improving Online Distillation: Alternating Loss Functions**: Exploring methods to enhance online distillation.
+- **Reframing the Problem in Terms of Bias and Variance**: Aiming for better problem formulation.
 
-4. **Run training:**
+</details>
 
-```bash
-python src/training/train.py --config src/config/config.yaml
-```
+</details>
 
-## Contributing 🤝
+<details>
+<summary>## To Do 📝</summary>
 
-Feel free to open issues or submit pull requests with improvements.
+<details>
+<summary>### Model 🛠️</summary>
 
-## License 📄
+- **Aligning Number of Parameters of Student Model with Compute Capabilities of Modern Self-Driving Cars**: Optimizing the student model for real-world applications.
 
-This project is licensed under the MIT License.
+</details>
+
+<details>
+<summary>### Data 🧬</summary>
+
+- **Studying Properties of the Dataset Better**: Deepening the understanding of dataset characteristics.
+
+</details>
+
+<details>
+<summary>### Code 👨‍💻</summary>
+
+- **Profiling Code to Measure Inference Time of the Student Model**: Performance analysis.
+- **Logging Images Through Network Layers to Gain New Insights**: Visualizing and understanding model behavior.
+
+</details>
+
+</details>
