@@ -1,17 +1,17 @@
 # Presentation 📊
 
 <details>
-<summary>## Brief Intro 🌟</summary>
+<summary>Brief Intro 🌟</summary>
 
 - **Distillation x Segmentation**: An overview of how distillation techniques are applied to segmentation tasks.
 
 </details>
 
 <details>
-<summary>## Done ✅</summary>
+<summary>Done ✅</summary>
 
 <details>
-<summary>### Research 📚</summary>
+<summary>Research 📚</summary>
 
 - **Original Paper**: Summarized insights and key points.
 - **Deep Dive into CE Loss and Dark Knowledge**: Understanding cross-entropy loss and the concept of dark knowledge in distillation.
@@ -20,21 +20,21 @@
 </details>
 
 <details>
-<summary>### Model 🧠</summary>
+<summary>Model 🧠</summary>
 
 - **UNet Choice Explanation**: Justification for choosing the UNet architecture for the task.
 
 </details>
 
 <details>
-<summary>### Data 📈</summary>
+<summary>Data 📈</summary>
 
 - **BDD100K + Cityscapes & Class Imbalance Problem**: Analysis of the datasets used and the challenge of class imbalance.
 
 </details>
 
 <details>
-<summary>### Code 💻</summary>
+<summary>Code 💻</summary>
 
 - **Working Code for Training & Distillation of UNet Model (PyTorch)**: Implementation details.
 - **Distributed Training Option (Accelerate)**: Configuration for distributed training.
@@ -46,10 +46,10 @@
 </details>
 
 <details>
-<summary>## Doing 🔄</summary>
+<summary>Doing 🔄</summary>
 
 <details>
-<summary>### Research 🧐</summary>
+<summary>Research 🧐</summary>
 
 - **Thinking About a Loss Function for the Teacher Model that Favors Teaching & Performance (High Entropy Output)**: Developing a specialized loss function.
 - **Deciding on Distillation Paradigm for UNet (Decoder, Encoder, Bottleneck)**: Selecting the most suitable distillation approach for UNet.
@@ -61,24 +61,24 @@
 </details>
 
 <details>
-<summary>## To Do 📝</summary>
+<summary>To Do 📝</summary>
 
 <details>
-<summary>### Model 🛠️</summary>
+<summary>Model 🛠️</summary>
 
 - **Aligning Number of Parameters of Student Model with Compute Capabilities of Modern Self-Driving Cars**: Optimizing the student model for real-world applications.
 
 </details>
 
 <details>
-<summary>### Data 🧬</summary>
+<summary>Data 🧬</summary>
 
 - **Studying Properties of the Dataset Better**: Deepening the understanding of dataset characteristics.
 
 </details>
 
 <details>
-<summary>### Code 👨‍💻</summary>
+<summary>Code 👨‍💻</summary>
 
 - **Profiling Code to Measure Inference Time of the Student Model**: Performance analysis.
 - **Logging Images Through Network Layers to Gain New Insights**: Visualizing and understanding model behavior.
