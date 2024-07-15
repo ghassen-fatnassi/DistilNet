@@ -1,7 +1,7 @@
 dataset:
   name: "cityscapes"
-  train_imgs_dir: "../data/bdd100k/images"
-  train_masks_dir: "../data/bdd100k/labels"
+  train_imgs_dir: "../../data/bdd100k/images"
+  train_masks_dir: "../../data/bdd100k/labels"
   img_type: "jpg"
   mask_type: "png"
   num_classes: 19
@@ -35,5 +35,5 @@ wandb:
 
 paths:
   cfg:
-    Unet: "config/Unet.yaml"
-    SegFormer: "config/SegFormer.yaml"
+    Unet: "../config/Unet.yaml"
+    SegFormer: "../config/SegFormer.yaml"

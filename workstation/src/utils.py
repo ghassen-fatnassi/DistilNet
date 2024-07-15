@@ -67,6 +67,7 @@ class bdd10kMaskProcessor(cityscapesMaskProcessor):
             binary_mask=mask==class_index
             one_hot_mask[class_index]=binary_mask        
         return one_hot_mask
+    
 class datasetSplitter:
     def __init__(self, dataset, batch_size, test_split=0.2, random_seed=5000):
         self.dataset = dataset
@@ -89,7 +90,7 @@ class datasetSplitter:
         test_sampler = SubsetRandomSampler(test_indices)
 
         # Create data loaders
-        self.train_loader = DataLoader(self.dataset, batch_size=self.batch_size ,sampler=train_sampler, num_workers=4)
-        self.test_loader = DataLoader(self.dataset, batch_size=self.batch_size, sampler=test_sampler, num_workers=4)
+        self.train_loader = DataLoader(self.dataset, batch_size=self.batch_size ,sampler=train_sampler, num_workers=6)
+        self.test_loader = DataLoader(self.dataset, batch_size=self.batch_size, sampler=test_sampler, num_workers=6)
 
         return self.train_loader, self.test_loader

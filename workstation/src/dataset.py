@@ -1,11 +1,10 @@
 import torch
 from torch.utils.data import Dataset
-
 import numpy as np
 from pathlib import Path
 from PIL import Image
 
-from utils import cityscapesMaskProcessor,load_yaml,bdd10kMaskProcessor
+from utils import cityscapesMaskProcessor,bdd10kMaskProcessor,load_yaml
 
 class SegDataset(Dataset):
     def __init__(self, config=None):# mode is either train_val or test

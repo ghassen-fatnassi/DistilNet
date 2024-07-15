@@ -9,8 +9,8 @@ training:
   factor: 0.1
   patience: 10
   save: False
-  save_dir: "../Models/Teachers/Unet"
-  log_dir: "../logs/Teachers/Unet"
+  save_dir: "../../Models/Teachers/Unet"
+  log_dir: "../../logs/Teachers/Unet"
 distillation:
   depth: 2
   in_channels: 3
@@ -24,6 +24,6 @@ distillation:
   factor: 0.1
   patience: 10
   save: False
-  teacher_weight_dir: "../Models/Teachers/Unet/depth2_in3_start4_batch10_epochs1_lr0.001.safetensors"
-  save_dir: "../Models/Students/Unet"
-  log_dir: "../logs/Students/Unet"
+  teacher_weight_dir: "../../Models/Teachers/Unet/depth2_in3_start4_batch10_epochs1_lr0.001.safetensors"
+  save_dir: "../../Models/Students/Unet"
+  log_dir: "../../logs/Students/Unet"

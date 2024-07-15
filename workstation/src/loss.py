@@ -9,7 +9,12 @@ class WeightedCELoss(nn.Module):
     def __init__(self):
         super(WeightedCELoss, self).__init__()
         self.weights=torch.tensor(cfg['dataset']['class_weights'])
-
+        
+    def to(self,device):
+        self.weights=self.weights.to(device)
+        return super(WeightedCELoss,self).to(device) 
+    #calling the to method of parent class to ensure proper handling of the rest of the logic
+    
     def forward(self, out_mask, true_mask, temperature=1):
         out_mask = out_mask.float() / temperature
         true_mask = true_mask.float()

@@ -2,8 +2,10 @@ from tqdm import trange, tqdm
 import numpy as np
 import torch
 import wandb
-from utils import load_yaml, cityscapesMaskProcessor
 from segmentation_models_pytorch.metrics import iou_score, f1_score, recall, get_stats
+
+from ... import utils
+from utils import  load_yaml,cityscapesMaskProcessor,bdd10kMaskProcessor
 
 # Load configuration file
 cfg = load_yaml()
@@ -15,7 +17,7 @@ def return_loggable_imgs(images, masks):
     if isinstance(masks, torch.Tensor):
         masks = masks.permute(0, 2, 3, 1).cpu().numpy()
     
-    single_channel_masks = np.argmax(masks, axis=1)
+    single_channel_masks = np.argmax(masks, axis=-1)
     class_labels = cityscapesMaskProcessor().class_labels
     wandb_images = []
 
