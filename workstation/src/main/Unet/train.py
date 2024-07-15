@@ -11,7 +11,7 @@ import json
 from ... import dataset,utils,loss
 from dataset import SegDataset
 from utils import datasetSplitter, load_yaml
-from .. import models
+from ... import models
 from models.Unet import segUnet
 from teacher_engine import engine
 

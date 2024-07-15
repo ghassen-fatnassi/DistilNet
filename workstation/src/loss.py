@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from . import utils
 from utils import load_yaml
 
 cfg = load_yaml()
