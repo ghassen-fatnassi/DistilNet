@@ -1,29 +1,35 @@
+resize: [32, 32] # [width,height]
+model: "Unet" #this should be the same name of the folder where the model will be saved
 training:
-  depth: 2
+  depth: 3
   in_channels: 3
   start_filts: 4
-  batch_size: 10
-  epochs: 15
-  lr: 0.001
+  batch_size: 4
+  epochs: 3
+  log_masks_every: 5
+  last_batch: 10 # put to -1 if len(dataloader)
+  lr: 0.01
   #only using reduce on plateau for now
   factor: 0.1
-  patience: 10
-  save: False
-  save_dir: "../../../Models/Teachers/Unet"
-  log_dir: "../../../logs/Teachers/Unet"
+  patience: 30
+  save: True
+  save_dir: "./Models/Teachers/"
+  log_dir: "./logs/Teachers/"
 distillation:
   depth: 2
   in_channels: 3
   start_filts: 4
   batch_size: 10
-  epochs: 10
+  epochs: 3
+  log_masks_every: 5
+  last_batch: 10 # put to -1 if len(dataloader)
   lr: 0.01
   temperature: 3
   alpha: 0.8 #weight of the teacher loss
   #only using reduce on plateau for now
   factor: 0.1
   patience: 10
-  save: False
-  teacher_weight_dir: "../../../Models/Teachers/Unet/depth2_in3_start4_batch10_epochs1_lr0.001.safetensors"
-  save_dir: "../../../Models/Students/Unet"
-  log_dir: "../../../logs/Students/Unet"
+  save: True
+  teacher_weight_dir: "./Models/Teachers/Unet/20240721_165526.safetensors" # identity is just a place holder , don't forget to modify it
+  save_dir: "./Models/Students/"
+  log_dir: "./logs/Students/"

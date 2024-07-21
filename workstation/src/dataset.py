@@ -3,7 +3,9 @@ from torch.utils.data import Dataset
 import numpy as np
 from pathlib import Path
 from PIL import Image
-from utils import cityscapesMaskProcessor,bdd10kMaskProcessor,load_yaml
+from .utils import cityscapesMaskProcessor,bdd10kMaskProcessor,load_yaml
+
+torch.manual_seed(50)
 
 class SegDataset(Dataset):
     def __init__(self, config=None):# mode is either train_val or test
@@ -11,6 +13,7 @@ class SegDataset(Dataset):
         if config is None:
             config = load_yaml()
         self.cfg = config
+        self.Unet_cfg = load_yaml(self.cfg['paths']['cfg']['Unet'])
 
         self.img_dir = Path(self.cfg['dataset'][f'train_imgs_dir'])
         self.mask_dir = Path(self.cfg['dataset'][f'train_masks_dir'])
@@ -29,10 +32,10 @@ class SegDataset(Dataset):
 
         maskprocessor=bdd10kMaskProcessor()
 
-        image = Image.open(img_path).resize((self.cfg['dataset']['resize'][1], self.cfg['dataset']['resize'][0]), resample=Image.BILINEAR)
+        image = Image.open(img_path).resize((self.Unet_cfg['resize'][1], self.Unet_cfg['resize'][0]), resample=Image.BILINEAR)
         image = torch.from_numpy(np.array(image) / 255).float().permute(2, 0, 1)  # Normalize and permute to [C, H, W]
 
-        mask = Image.open(mask_path).resize((self.cfg['dataset']['resize'][1], self.cfg['dataset']['resize'][0]), resample=Image.NEAREST)
+        mask = Image.open(mask_path).resize((self.Unet_cfg['resize'][1], self.Unet_cfg['resize'][0]), resample=Image.NEAREST)
         mask=maskprocessor.one_hotting_mask(np.array(mask))
         mask = torch.from_numpy(mask)
 

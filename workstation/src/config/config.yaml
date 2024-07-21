@@ -1,9 +1,8 @@
 dataset:
-  name: "cityscapes"
-  train_imgs_dir: "../../data/bdd100k/images"
-  train_masks_dir: "../../data/bdd100k/labels"
+  train_imgs_dir: "./data/images"
+  train_masks_dir: "./data/labels"
   img_type: "jpg"
-  mask_type: "png"
+  mask_type: "jpg"
   num_classes: 19
   class_labels:
   class_weights: [
@@ -27,7 +26,6 @@ dataset:
       3.0, # motorcycle
       3.0, # bicycle
     ]
-  resize: [32, 16] # [width,height]
 
 wandb:
   API_KEY: "960c7d1edaf53d6de7137290cfcbbc610b77fc67"
@@ -35,5 +33,5 @@ wandb:
 
 paths:
   cfg:
-    Unet: "../config/Unet.yaml"
-    SegFormer: "../config/SegFormer.yaml"
+    Unet: "./src/config/Unet.yaml"
+    SegFormer: "./src/config/SegFormer.yaml"
