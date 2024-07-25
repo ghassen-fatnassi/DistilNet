@@ -6,9 +6,9 @@ torch.manual_seed(50)
 class conv_block(nn.Module):
     def __init__(self, in_c, out_c,negative_slope):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_c, out_c, kernel_size=7, padding=3)
-        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=5, padding=2)
-        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(in_c, out_c, kernel_size=3, padding=1,bias=False)
+        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1,bias=False)
+        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=7, padding=3,bias=False)
         self.bn = nn.BatchNorm2d(out_c)
         self.relu = nn.LeakyReLU(negative_slope=negative_slope)
 
@@ -50,7 +50,7 @@ class segUnet(nn.Module):
         self.depth = depth
         self.negative_slope=negative_slope
         self.internal_masks=[]
-        
+        self.skips=[]
 
         """ Encoders """
         self.encoders = nn.ModuleList([encoder_block(in_channels, start_filts,self.negative_slope)])
@@ -65,30 +65,37 @@ class segUnet(nn.Module):
         """ Classifier """
         self.outputs = nn.Conv2d(start_filts, num_classes, kernel_size=1)
 
-    def forward(self, inputs,visualize_mask=False):
-        skips = []
-        self.internal_masks=[]
+    def forward(self, inputs):
         x = inputs
-        self.internal_masks.append(x[-3,-1])
-
+        self.skips=[]
         for encoder in self.encoders:
             x, p = encoder(x)
-            if visualize_mask:
-                self.internal_masks.extend([x[-3,-1],p[-3,-1]])
-            skips.append(x)
+            self.skips.append(x)
             x = p
 
         x = self.bottleneck(x)
-        if visualize_mask:
-            self.internal_masks.append(x[-3,-1])
 
         for i, decoder in enumerate(self.decoders):
-            x = decoder(x, skips[-(i+1)])
-            if visualize_mask:
-                self.internal_masks.append(x[-3,-1])
+            x = decoder(x, self.skips[-(i+1)])
         outputs = self.outputs(x)
-        if visualize_mask:
-            self.internal_masks.append(np.argmax(outputs[-3].detach().permute(1,2,0).numpy(),axis=-1))
-            return self.internal_masks
         return outputs
     
+    def exp_forward(self,inputs):
+        self.skips = []
+        self.internal_masks=[]
+        x = inputs
+        self.internal_masks.append(x[-1])
+        for encoder in self.encoders:
+            x, p = encoder(x)
+            self.internal_masks.append(x[-1,-1])
+            self.skips.append(x)
+            x = p
+        self.internal_masks.append(x[-1,-1])
+        x = self.bottleneck(x)
+
+        for i, decoder in enumerate(self.decoders):
+            self.internal_masks.append(x[-1,-1])
+            x = decoder(x, self.skips[-(i+1)])
+        
+        return self.internal_masks
+        

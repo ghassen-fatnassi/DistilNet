@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from .utils import load_yaml
+from utils import load_yaml
 
 torch.manual_seed(50)
 
@@ -25,7 +25,6 @@ class WeightedCELoss(nn.Module):
         true_mask = true_mask.permute(0, 2, 3, 1).reshape(-1, true_mask.size(1))
 
         loss = nn.functional.cross_entropy(out_mask, true_mask.argmax(dim=1),weight=self.weights, reduction='mean')
-
         return loss
 
 class TverskyCEDiceWeightedLoss(nn.Module):
@@ -37,7 +36,7 @@ class TverskyCEDiceWeightedLoss(nn.Module):
 class WeightedDistillationLoss(nn.Module):
     """Distillation loss."""
     def __init__(self,temperature,alpha=0.5):
-        super(WeightedDistillationLoss, self).__init__()
+        super().__init__()
         self.ce_loss = WeightedCELoss()
         self.temperature = temperature
         self.alpha = alpha
@@ -49,3 +48,7 @@ class WeightedDistillationLoss(nn.Module):
         loss = self.alpha * soft_loss + (1 - self.alpha) * hard_loss
 
         return loss
+    
+    def to(self,device):
+        self.ce_loss=self.ce_loss.to(device)
+        return super(WeightedDistillationLoss,self).to(device) 

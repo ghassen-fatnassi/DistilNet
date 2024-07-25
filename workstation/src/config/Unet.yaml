@@ -1,35 +1,33 @@
-resize: [32, 32] # [width,height]
-model: "Unet" #this should be the same name of the folder where the model will be saved
-training:
+resize: [128, 128] # [width,height]
+in_channels: 3
+last_batch: -1 # put to -1 if len(dataloader)
+log_masks_every: 25
+batch_metrics_every: 25
+img_sampling_index: 25
+teacher:
+  depth: 4
+  start_filts: 64
+  batch_size: 32
+  epochs: 200
+  lr: 0.003
+  #only using reduce on plateau for now
+  factor: 0.33333
+  patience: 80
+  save: True
+  save_dir: "./ACTIA/workstation/Models/Teachers"
+  log_dir: "./ACTIA/workstation/logs/Teachers"
+student:
   depth: 3
-  in_channels: 3
-  start_filts: 4
-  batch_size: 4
-  epochs: 3
-  log_masks_every: 5
-  last_batch: 10 # put to -1 if len(dataloader)
+  start_filts: 8
+  batch_size: 64
+  epochs: 200
   lr: 0.01
   #only using reduce on plateau for now
-  factor: 0.1
-  patience: 30
+  factor: 0.33333
+  patience: 80
   save: True
-  save_dir: "./Models/Teachers/"
-  log_dir: "./logs/Teachers/"
-distillation:
-  depth: 2
-  in_channels: 3
-  start_filts: 4
-  batch_size: 10
-  epochs: 3
-  log_masks_every: 5
-  last_batch: 10 # put to -1 if len(dataloader)
-  lr: 0.01
-  temperature: 3
-  alpha: 0.8 #weight of the teacher loss
-  #only using reduce on plateau for now
-  factor: 0.1
-  patience: 10
-  save: True
-  teacher_weight_dir: "./Models/Teachers/Unet/20240721_165526.safetensors" # identity is just a place holder , don't forget to modify it
-  save_dir: "./Models/Students/"
-  log_dir: "./logs/Students/"
+  temperature: 5 #temperature for the distillation
+  alpha: 0.7 #weight of the teacher loss
+  teacher_weight_dir: "./ACTIA/workstation/Models/Teachers/Unet/20240725_020251.safetensors" # identity is just a place holder , don't forget to modify it
+  save_dir: "./ACTIA/workstation/Models/Students"
+  log_dir: "./ACTIA/workstation/logs/Students"

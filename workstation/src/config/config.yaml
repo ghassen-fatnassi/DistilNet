@@ -1,8 +1,8 @@
 dataset:
-  train_imgs_dir: "./data/images"
-  train_masks_dir: "./data/labels"
+  train_imgs_dir: "./ACTIA/workstation/data/images"
+  train_masks_dir: "./ACTIA/workstation/data/labels"
   img_type: "jpg"
-  mask_type: "jpg"
+  mask_type: "png"
   num_classes: 19
   class_labels:
   class_weights: [
@@ -33,5 +33,5 @@ wandb:
 
 paths:
   cfg:
-    Unet: "./src/config/Unet.yaml"
-    SegFormer: "./src/config/SegFormer.yaml"
+    Unet: "./ACTIA/workstation/src/config/Unet.yaml"
+    SegFormer: "./ACTIA/workstation/src/config/SegFormer.yaml"

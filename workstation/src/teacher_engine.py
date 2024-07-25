@@ -1,10 +1,10 @@
-from tqdm import trange, tqdm
+from tqdm.notebook import trange,tqdm
 import numpy as np
 import torch
 import wandb
 from segmentation_models_pytorch.metrics import iou_score, f1_score, recall, get_stats
 
-from ....utils import  load_yaml,cityscapesMaskProcessor,bdd10kMaskProcessor
+from utils import  load_yaml,UnetMaskProcessor
 
 torch.manual_seed(50)
 
@@ -46,7 +46,7 @@ def return_loggable_imgs(images, masks):
         masks = masks.permute(0, 2, 3, 1).cpu().numpy()
     
     single_channel_masks = np.argmax(masks, axis=-1)
-    class_labels = bdd10kMaskProcessor().class_labels
+    class_labels = UnetMaskProcessor().class_labels
     wandb_images = []
 
     for img, mask in zip(images, single_channel_masks):
@@ -74,13 +74,15 @@ def return_batch_metrics(criterion, outputs, masks):
 
 def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
 
-    if Unet_cfg['training']['last_batch']==-1:
+    if Unet_cfg['last_batch']==-1:
         last_batch = len(dataloader)
     else:
-        last_batch= Unet_cfg['training']['last_batch']
+        last_batch= Unet_cfg['last_batch']
     model.train()
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0, 'epoch':epoch}
-
+    tracked_images = None
+    tracked_masks = None
+    internal_masks=None
     for batch, (images, masks) in enumerate(tqdm(dataloader)):
         with accelerator.autocast():
             outputs = model(images)
@@ -91,9 +93,12 @@ def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
         optimizer.step()
         
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch+1})
+        accelerator.log({"train_batches": batch_metrics, "batch": last_batch * epoch + batch})
 
-    
+        if batch == Unet_cfg['img_sampling_index'] & epoch%Unet_cfg['log_masks_every']==0:
+            tracked_images = images
+            tracked_masks = outputs
+            internal_masks=model.exp_forward(images)
         if batch >= last_batch:
             break
 
@@ -102,13 +107,13 @@ def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
             metrics[key] += batch_metrics[key] / last_batch
 
 
-    return metrics
+    return metrics, tracked_images, tracked_masks, internal_masks
 
-def val_step(model, dataloader, criterion, accelerator, epoch, img_sampling_index):
-    if Unet_cfg['training']['last_batch']==-1:
+def val_step(model, dataloader, criterion, accelerator, epoch):
+    if Unet_cfg['last_batch']==-1:
         last_batch = len(dataloader)
     else:
-        last_batch= Unet_cfg['training']['last_batch']
+        last_batch= Unet_cfg['last_batch']
     model.eval()
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0,'epoch':epoch}
     tracked_images = None
@@ -122,13 +127,13 @@ def val_step(model, dataloader, criterion, accelerator, epoch, img_sampling_inde
                 batch_metrics = return_batch_metrics(criterion, outputs, masks)
         
         batch_metrics['loss'] = batch_metrics['loss'].item()
-        accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch+1})
+        accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch})
 
 
-        if batch == img_sampling_index & epoch%Unet_cfg['training']['log_masks_every']==0:
+        if batch == Unet_cfg['img_sampling_index'] & epoch%Unet_cfg['log_masks_every']==0:
             tracked_images = images
             tracked_masks = outputs
-            internal_masks=model(images,visualize_mask=True)
+            internal_masks=model.exp_forward(images)
         if batch >= last_batch:
             break
 
@@ -139,29 +144,35 @@ def val_step(model, dataloader, criterion, accelerator, epoch, img_sampling_inde
 
     return metrics, tracked_images, tracked_masks,internal_masks
 
-def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, accelerator, epochs, img_sampling_index=10):
+def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, accelerator, epochs):
 
     for epoch in trange(epochs):
         epoch_train_metrics = train_step(model, train_loader, criterion, optimizer, accelerator, epoch)
-        epoch_val_metrics = val_step(model, val_loader, criterion, accelerator, epoch, img_sampling_index)
-        scheduler.step(epoch_train_metrics['loss'])
-        if epoch%Unet_cfg['training']['log_masks_every']==0:
-            tracked_images = epoch_val_metrics[1]
-            tracked_masks = epoch_val_metrics[2]
-            wandb_img_and_masks = return_loggable_imgs(tracked_images, tracked_masks)
-            wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
+        epoch_val_metrics = val_step(model, val_loader, criterion, accelerator, epoch)
+        scheduler.step(epoch_train_metrics[0]['loss'])
+        if epoch%Unet_cfg['log_masks_every']==0:
+            val_tracked_images = epoch_val_metrics[1]
+            val_tracked_masks = epoch_val_metrics[2]
+            val_wandb_img_and_masks = return_loggable_imgs(val_tracked_images, val_tracked_masks)
+            val_wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
+            train_tracked_images = epoch_val_metrics[1]
+            train_tracked_masks = epoch_val_metrics[2]
+            train_wandb_img_and_masks = return_loggable_imgs(train_tracked_images, train_tracked_masks)
+            train_wandb_internal_representations=ready_internal_masks(epoch_train_metrics[3])
             learned_kernels=ready_kernels(model)
             epoch_metrics = {
-                'train_epochs': epoch_train_metrics,
+                'train_epochs': epoch_train_metrics[0],
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
-                'mask_per_epoch': wandb_img_and_masks,
-                'internals_per_epoch':wandb_internal_representations,
-                'filters_per_epoch': learned_kernels
+                'val_mask_per_epoch': val_wandb_img_and_masks,
+                'val_internals_per_epoch':val_wandb_internal_representations,
+                'filters_per_epoch': learned_kernels,
+                'train_mask_per_epoch': train_wandb_img_and_masks,
+                'train_internals_per_epoch':train_wandb_internal_representations,
             }
         else:
             epoch_metrics = {
-                'train_epochs': epoch_train_metrics,
+                'train_epochs': epoch_train_metrics[0],
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
             }
