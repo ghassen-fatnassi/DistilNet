@@ -1,6 +1,6 @@
 dataset:
-  train_imgs_dir: "./ACTIA/workstation/data/images"
-  train_masks_dir: "./ACTIA/workstation/data/labels"
+  train_imgs_dir: "./ACTIA/workstation/data/X/images"
+  train_masks_dir: "./ACTIA/workstation/data/X/labels"
   img_type: "jpg"
   mask_type: "png"
   num_classes: 19

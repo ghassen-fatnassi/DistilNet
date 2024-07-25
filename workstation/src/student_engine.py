@@ -78,7 +78,7 @@ def return_loggable_imgs(images, student_masks, teacher_masks):
 def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
-    tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.5)  # threshold rounds the output to 0 or 1
+    tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.7)  # threshold rounds the output to 0 or 1
     metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
     metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
     metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
@@ -110,8 +110,7 @@ def train_step(student, teacher, dataloader, criterion, optimizer, accelerator, 
         if batch >= last_batch:
             break
 
-    for key in metrics.keys():
-        if key!='epoch':
+        for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch
         
 
@@ -124,13 +123,13 @@ def val_step(student, teacher, dataloader, criterion, accelerator, epoch):
         last_batch= Unet_cfg['last_batch']    
     student.eval()
     teacher.eval()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0, 'epoch':epoch}
+    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
     tracked_images = None
     tracked_student_masks = None
     tracked_teacher_masks = None
     student_internal_masks = None
     teacher_internal_masks = None
-    for batch, (images, masks) in enumerate(tqdm(dataloader)):
+    for batch, (images, masks) in enumerate(dataloader):
         with accelerator.autocast():
             with torch.inference_mode():
                 student_outputs = student(images)
@@ -151,8 +150,7 @@ def val_step(student, teacher, dataloader, criterion, accelerator, epoch):
         if batch >= last_batch:
             break
 
-    for key in metrics.keys():
-        if key!='epoch':
+        for key in metrics.keys():
             metrics[key] += batch_metrics[key] / last_batch
 
     return metrics, tracked_images, tracked_student_masks,tracked_teacher_masks, student_internal_masks,teacher_internal_masks

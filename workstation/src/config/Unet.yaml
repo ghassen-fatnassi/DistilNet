@@ -1,14 +1,14 @@
 resize: [128, 128] # [width,height]
 in_channels: 3
 last_batch: -1 # put to -1 if len(dataloader)
-log_masks_every: 25
-batch_metrics_every: 25
-img_sampling_index: 25
+log_masks_every: 6
+batch_metrics_every: 6
+img_sampling_index: 6
 teacher:
   depth: 4
-  start_filts: 64
-  batch_size: 16
-  epochs: 60
+  start_filts: 16
+  batch_size: 32
+  epochs: 30
   lr: 0.003
   #only using reduce on plateau for now
   factor: 0.33333
@@ -20,7 +20,7 @@ student:
   depth: 3
   start_filts: 16
   batch_size: 16
-  epochs: 60
+  epochs: 30
   lr: 0.005
   #only using reduce on plateau for now
   factor: 0.33333
