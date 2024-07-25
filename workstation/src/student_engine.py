@@ -1,4 +1,4 @@
-from tqdm.rich import trange,tqdm
+from tqdm.autonotebook import trange,tqdm
 import numpy as np
 import torch
 import wandb
@@ -92,7 +92,7 @@ def train_step(student, teacher, dataloader, criterion, optimizer, accelerator, 
         last_batch= Unet_cfg['last_batch']
     student.train()
     teacher.eval()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0, 'epoch':epoch}
+    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
     for batch, (images, masks) in enumerate(tqdm(dataloader)):
         with accelerator.autocast():
             student_outputs = student(images)

@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 from utils import  load_yaml,UnetMaskProcessor
-from tqdm.rich import trange,tqdm
+from tqdm.autonotebook import trange,tqdm
 torch.manual_seed(50)
 
 class SegDataset(Dataset):
@@ -28,9 +28,9 @@ class SegDataset(Dataset):
         self.load_data_into_memory()
  
     def __len__(self):
-        return len(self.img_paths)//self.cfg['divide_by']
+        return len(self.img_paths)//self.cfg['dataset']['divide']
     def load_data_into_memory(self):
-        for i in trange(len(self.img_paths)//self.cfg['divide_by'],desc="Loading data into memory"):
+        for i in trange(len(self),desc="Loading data into memory"):
             img_path=self.img_paths[i]
             mask_path=self.mask_paths[i]
             image=Image.open(img_path).resize(
