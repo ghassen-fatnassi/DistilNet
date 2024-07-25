@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 from utils import  load_yaml,UnetMaskProcessor
-from tqdm.notebook import trange
+from tqdm.rich import trange,tqdm
 torch.manual_seed(50)
 
 class SegDataset(Dataset):

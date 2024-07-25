@@ -1,4 +1,4 @@
-from tqdm.notebook import trange,tqdm
+from tqdm.rich import trange,tqdm
 import numpy as np
 import torch
 import wandb
