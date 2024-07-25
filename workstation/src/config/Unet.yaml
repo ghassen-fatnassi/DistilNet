@@ -14,8 +14,8 @@ teacher:
   factor: 0.33333
   patience: 20
   save: True
-  save_dir: "./ACTIA/workstation/Models/Teachers"
-  log_dir: "./ACTIA/workstation/logs/Teachers"
+  save_dir: "./actia/workstation/Models/Teachers"
+  log_dir: "./actia/workstation/logs/Teachers"
 student:
   depth: 3
   start_filts: 16
@@ -28,6 +28,6 @@ student:
   save: True
   temperature: 5 #temperature for the distillation
   alpha: 0.7 #weight of the teacher loss
-  teacher_weight_dir: "./ACTIA/workstation/Models/Teachers/Unet/20240725_020251.safetensors" # identity is just a place holder , don't forget to modify it
-  save_dir: "./ACTIA/workstation/Models/Students"
-  log_dir: "./ACTIA/workstation/logs/Students"
+  teacher_weight_dir: "./actia/workstation/Models/Teachers/Unet/20240725_020251.safetensors" # identity is just a place holder , don't forget to modify it
+  save_dir: "./actia/workstation/Models/Students"
+  log_dir: "./actia/workstation/logs/Students"

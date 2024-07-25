@@ -28,9 +28,9 @@ class SegDataset(Dataset):
         self.load_data_into_memory()
  
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.img_paths)//self.cfg['divide_by']
     def load_data_into_memory(self):
-        for i in trange(len(self.img_paths),desc="Loading data into memory"):
+        for i in trange(len(self.img_paths)//self.cfg['divide_by'],desc="Loading data into memory"):
             img_path=self.img_paths[i]
             mask_path=self.mask_paths[i]
             image=Image.open(img_path).resize(

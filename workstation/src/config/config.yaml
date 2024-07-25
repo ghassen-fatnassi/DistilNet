@@ -1,6 +1,7 @@
 dataset:
-  train_imgs_dir: "./ACTIA/workstation/data/X/images"
-  train_masks_dir: "./ACTIA/workstation/data/X/labels"
+  train_imgs_dir: "./actia/workstation/data/X/images"
+  train_masks_dir: "./actia/workstation/data/X/labels"
+  divide_by: 50 #replace by 1 if u want to use the full dataset
   img_type: "jpg"
   mask_type: "png"
   num_classes: 19
@@ -33,5 +34,5 @@ wandb:
 
 paths:
   cfg:
-    Unet: "./ACTIA/workstation/src/config/Unet.yaml"
-    SegFormer: "./ACTIA/workstation/src/config/SegFormer.yaml"
+    Unet: "./actia/workstation/src/config/Unet.yaml"
+    SegFormer: "./actia/workstation/src/config/SegFormer.yaml"

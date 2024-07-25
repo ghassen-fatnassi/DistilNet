@@ -9,7 +9,7 @@ import json
 torch.manual_seed(50)
 
 """loading config file"""
-def load_yaml(config_path="./ACTIA/workstation/src/config/config.yaml"):
+def load_yaml(config_path="./actia/workstation/src/config/config.yaml"):
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
     return config
