@@ -1,4 +1,4 @@
-from tqdm.autonotebook import trange,tqdm
+from tqdm.rich import trange,tqdm
 import numpy as np
 import torch
 import wandb
@@ -65,7 +65,7 @@ def ready_internal_masks(internal_masks):
 def return_batch_metrics(criterion, outputs, masks):
 
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
-    tp, fp, fn, tn = get_stats(outputs, masks, mode='multilabel', threshold=0.7)
+    tp, fp, fn, tn = get_stats(outputs.argmax(dim=1), masks.argmax(dim=1), mode='multiclass',num_classes=19)
     metrics['loss'] = criterion(outputs, masks)
     metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
     metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
@@ -147,15 +147,12 @@ def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, acc
     for epoch in trange(epochs):
         epoch_train_metrics = train_step(model, train_loader, criterion, optimizer, accelerator, epoch)
         epoch_val_metrics = val_step(model, val_loader, criterion, accelerator, epoch)
-        scheduler.step(epoch_train_metrics[0]['loss'])
+        scheduler.step()
         if epoch%Unet_cfg['log_masks_every']==0:
             val_tracked_images = epoch_val_metrics[1]
             val_tracked_masks = epoch_val_metrics[2]
             val_wandb_img_and_masks = return_loggable_imgs(val_tracked_images, val_tracked_masks)
             val_wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
-            train_tracked_images = epoch_train_metrics[1]
-            train_tracked_masks = epoch_train_metrics[2]
-            # train_wandb_img_and_masks = return_loggable_imgs(train_tracked_images, train_tracked_masks)
             train_wandb_internal_representations=ready_internal_masks(epoch_train_metrics[3])
             learned_kernels=ready_kernels(model)
             epoch_metrics = {
@@ -165,14 +162,15 @@ def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, acc
                 'val_mask_per_epoch': val_wandb_img_and_masks,
                 'val_internals_per_epoch':val_wandb_internal_representations,
                 'filters_per_epoch': learned_kernels,
-                # 'train_mask_per_epoch': train_wandb_img_and_masks,
                 'train_internals_per_epoch':train_wandb_internal_representations,
+                'lr':scheduler.get_last_lr()
             }
         else:
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics[0],
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
+                'lr':scheduler.get_last_lr()
             }
         accelerator.log(epoch_metrics)
     

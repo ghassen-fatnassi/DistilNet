@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader, random_split
 from torch.optim import Adam, SGD, AdamW, Adamax
-from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau,CosineAnnealingWarmRestarts,StepLR,SequentialLR
 from accelerate import Accelerator
 import safetensors.torch
 import wandb
@@ -57,10 +57,13 @@ teacher.load_state_dict(safetensors.torch.load_file(Unet_cfg['student']['teacher
 lr = Unet_cfg['student']['lr']
 optimizer = Adam(student.parameters(), lr=lr)
 
-# Scheduler
-factor = Unet_cfg['student']['factor']
-patience = Unet_cfg['student']['patience']
-scheduler = ReduceLROnPlateau(optimizer, factor=factor, patience=patience)
+# Schedulers
+T_0 = Unet_cfg['student']['T_0']
+T_mult = Unet_cfg['student']['T_mult']
+eta_min = Unet_cfg['student']['eta_min']
+scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=10)
+scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=T_0, T_mult=T_mult, eta_min=eta_min)
+scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[4])
 
 # Loss function
 criterion = loss.WeightedDistillationLoss(Unet_cfg['student']['temperature'], Unet_cfg['student']['alpha'])

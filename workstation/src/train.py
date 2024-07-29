@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader, random_split
 from torch.optim import Adam, SGD, AdamW, Adamax
-from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau,CosineAnnealingWarmRestarts,StepLR,SequentialLR
 from accelerate import Accelerator
 import safetensors.torch
 import wandb
@@ -51,9 +51,13 @@ lr = Unet_cfg['teacher']['lr']
 optimizer = Adam(teacher.parameters(), lr=lr)
 
 # Scheduler
-factor = Unet_cfg['teacher']['factor']
-patience = Unet_cfg['teacher']['patience']
-scheduler = ReduceLROnPlateau(optimizer, factor=factor, patience=patience)
+T_0 = Unet_cfg['teacher']['T_0']
+T_mult = Unet_cfg['teacher']['T_mult']
+eta_min = Unet_cfg['teacher']['eta_min']
+# Define the schedulers
+scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=10)
+scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=T_0, T_mult=T_mult, eta_min=eta_min)
+scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[4])
 
 # Loss function
 criterion = loss.WeightedCELoss()

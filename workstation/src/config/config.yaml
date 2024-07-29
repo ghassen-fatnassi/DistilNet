@@ -1,7 +1,7 @@
 dataset:
   train_imgs_dir: "./actia/workstation/data/X/images"
   train_masks_dir: "./actia/workstation/data/X/labels"
-  divide: 60 #replace by 1 if u want to use the full dataset
+  divide: 100 #replace by 1 if u want to use the full dataset
   img_type: "jpg"
   mask_type: "png"
   num_classes: 19
@@ -21,11 +21,11 @@ dataset:
       3.0, # person
       3.0, # rider
       1.0, # car
-      0.0, # truck
-      0.0, # bus
-      0.0, # train
-      3.0, # motorcycle
-      0.0, # bicycle
+      0.0, # truck 00
+      0.0, # bus 00
+      0.0, # train 00
+      0.0, # motorcycle 00
+      0.0, # bicycle 00
     ]
 
 wandb:

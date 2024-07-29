@@ -1,4 +1,4 @@
-from tqdm.autonotebook import trange,tqdm
+from tqdm.rich import trange,tqdm
 import numpy as np
 import torch
 import wandb
@@ -78,7 +78,7 @@ def return_loggable_imgs(images, student_masks, teacher_masks):
 def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     
     metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
-    tp, fp, fn, tn = get_stats(student_outputs, masks, mode='multilabel', threshold=0.7)  # threshold rounds the output to 0 or 1
+    tp, fp, fn, tn = get_stats(student_outputs.argmax(dim=1), masks.argmax(dim=1), mode='multiclass',num_classes=19)
     metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
     metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
     metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
@@ -159,7 +159,7 @@ def engine(student, teacher, train_loader, val_loader, criterion, optimizer, sch
     for epoch in trange(epochs):
         epoch_train_metrics = train_step(student, teacher, train_loader, criterion, optimizer, accelerator, epoch)
         epoch_val_metrics = val_step(student, teacher, val_loader, criterion, accelerator, epoch)
-        scheduler.step(epoch_train_metrics['loss'])
+        scheduler.step()
           
         if epoch % Unet_cfg['log_masks_every'] == 0:
             
@@ -178,13 +178,17 @@ def engine(student, teacher, train_loader, val_loader, criterion, optimizer, sch
                 'epoch': epoch,
                 'mask_per_epoch': wandb_img_and_masks,
                 'internals_per_epoch': wandb_internal_representations,
-                'filters_per_epoch': student_learned_kernels
+                'filters_per_epoch': student_learned_kernels,
+                'lr':scheduler.get_last_lr()
+
             }
         else:
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics,
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
+                'lr':scheduler.get_last_lr()
+
             }
         accelerator.log(epoch_metrics)
     
