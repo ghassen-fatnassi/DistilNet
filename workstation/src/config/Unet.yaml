@@ -6,12 +6,12 @@ batch_metrics_every: 5
 img_sampling_index: 5
 teacher:
   depth: 4
-  start_filts: 32
-  batch_size: 16
+  start_filts: 64
+  batch_size: 32
   T_0: 8
   T_mult: 2
   eta_min: 0.0003
-  epochs: 120
+  epochs: 30
   lr: 0.002
   save: True
   save_dir: "./actia/workstation/Models/Teachers"

@@ -24,7 +24,7 @@ class WeightedCELoss(nn.Module):
         out_mask = out_mask.permute(0, 2, 3, 1).reshape(-1, out_mask.size(1))
         true_mask = true_mask.permute(0, 2, 3, 1).reshape(-1, true_mask.size(1))
 
-        loss = nn.functional.cross_entropy(out_mask, true_mask.argmax(dim=1),weight=self.weights, reduction='mean')
+        loss = nn.functional.cross_entropy(out_mask, true_mask,weight=self.weights, reduction='mean')
         return loss
 
 class TverskyCEDiceWeightedLoss(nn.Module):
@@ -35,11 +35,13 @@ class TverskyCEDiceWeightedLoss(nn.Module):
 
 class WeightedDistillationLoss(nn.Module):
     """Distillation loss."""
+    
     def __init__(self,temperature,alpha=0.5):
         super().__init__()
         self.ce_loss = WeightedCELoss()
         self.temperature = temperature
         self.alpha = alpha
+
     def forward(self, student_out,true_mask, teacher_out):
 
         soft_loss = self.ce_loss(student_out, teacher_out, self.temperature) * (self.temperature ** 2)

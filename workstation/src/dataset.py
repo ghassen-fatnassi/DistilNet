@@ -26,9 +26,9 @@ class SegDataset(Dataset):
         self.maskpreprocessor=UnetMaskProcessor()
 
         self.T_for_both=v2.Compose([
-            v2.RandomHorizontalFlip(p=0.3),
-            v2.RandomVerticalFlip(p=0.3),
-            v2.RandomRotation(degrees=40),
+            v2.RandomHorizontalFlip(p=0.1),
+            v2.RandomVerticalFlip(p=0.1),
+            v2.RandomRotation(degrees=20),
         ])
         self.T_for_mask=v2.Compose([
             v2.Resize((self.D,self.D),interpolation=InterpolationMode.NEAREST),
