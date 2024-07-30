@@ -7,16 +7,13 @@ class conv_block(nn.Module):
     def __init__(self, in_c, out_c,negative_slope):
         super().__init__()
         self.conv1 = nn.Conv2d(in_c, out_c, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=7, padding=3,bias=False)
+        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=5, padding=2)
+        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1,bias=False)
         self.bn = nn.BatchNorm2d(out_c)
         self.relu = nn.LeakyReLU(negative_slope=negative_slope)
 
     def forward(self, inputs):
-        x = self.relu(self.conv1(inputs))
-        x = self.relu(self.conv2(x))
-        x = self.relu(self.bn(self.conv3(x)))
-        return x
+        return self.relu(self.bn(self.conv3(self.relu(self.conv2(self.relu(self.conv1(inputs)))))))
 
 class encoder_block(nn.Module):
     def __init__(self, in_c, out_c,negative_slope):

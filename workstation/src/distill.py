@@ -5,7 +5,7 @@ from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau,CosineAnnealingWa
 from accelerate import Accelerator
 import safetensors.torch
 import wandb
-
+import logging
 import datetime
 import os
 import json
@@ -25,6 +25,7 @@ Unet_cfg = utils.load_yaml(cfg['paths']['cfg']['Unet'])
 os.environ['WANDB_API_KEY'] = cfg['wandb']['API_KEY']
 os.environ["WANDB_SILENT"] = cfg['wandb']['silent']
 os.environ["WANDB_DIR"] = f"{Unet_cfg['student']['log_dir']}/Unet"
+wandb.util.logger.setLevel(logging.ERROR)
 
 
 def generate_timestamp_id():

@@ -153,7 +153,6 @@ def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, acc
             val_tracked_masks = epoch_val_metrics[2]
             val_wandb_img_and_masks = return_loggable_imgs(val_tracked_images, val_tracked_masks)
             val_wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
-            train_wandb_internal_representations=ready_internal_masks(epoch_train_metrics[3])
             learned_kernels=ready_kernels(model)
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics[0],
@@ -162,15 +161,14 @@ def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, acc
                 'val_mask_per_epoch': val_wandb_img_and_masks,
                 'val_internals_per_epoch':val_wandb_internal_representations,
                 'filters_per_epoch': learned_kernels,
-                'train_internals_per_epoch':train_wandb_internal_representations,
-                'lr':scheduler.get_last_lr()
+                'lr':scheduler.get_last_lr()[0]
             }
         else:
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics[0],
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
-                'lr':scheduler.get_last_lr()
+                'lr': scheduler.get_last_lr()[0]
             }
         accelerator.log(epoch_metrics)
     

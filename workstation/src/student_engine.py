@@ -179,15 +179,14 @@ def engine(student, teacher, train_loader, val_loader, criterion, optimizer, sch
                 'mask_per_epoch': wandb_img_and_masks,
                 'internals_per_epoch': wandb_internal_representations,
                 'filters_per_epoch': student_learned_kernels,
-                'lr':scheduler.get_last_lr()
-
+                'lr':scheduler.get_last_lr()[0]
             }
         else:
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics,
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
-                'lr':scheduler.get_last_lr()
+                'lr':scheduler.get_last_lr()[0]
 
             }
         accelerator.log(epoch_metrics)

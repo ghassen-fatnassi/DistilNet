@@ -5,7 +5,7 @@ from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau,CosineAnnealingWa
 from accelerate import Accelerator
 import safetensors.torch
 import wandb
-
+import logging
 import datetime
 import os
 import json
@@ -24,6 +24,8 @@ Unet_cfg = utils.load_yaml(cfg['paths']['cfg']['Unet'])
 os.environ['WANDB_API_KEY'] = cfg['wandb']['API_KEY']
 os.environ["WANDB_SILENT"] = cfg['wandb']['silent']
 os.environ["WANDB_DIR"] = f"{Unet_cfg['teacher']['log_dir']}/Unet"
+wandb.util.logger.setLevel(logging.ERROR)
+
 
 def generate_timestamp_id():
     # Get the current time
@@ -55,9 +57,9 @@ T_0 = Unet_cfg['teacher']['T_0']
 T_mult = Unet_cfg['teacher']['T_mult']
 eta_min = Unet_cfg['teacher']['eta_min']
 # Define the schedulers
-scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=10)
+scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=4)
 scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=T_0, T_mult=T_mult, eta_min=eta_min)
-scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[4])
+scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[2])
 
 # Loss function
 criterion = loss.WeightedCELoss()

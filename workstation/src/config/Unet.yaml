@@ -1,18 +1,18 @@
-resize: [64, 64] # [width,height]
+resize: [128, 128] # [width,height]
 in_channels: 3
 last_batch: -1 # put to -1 if len(dataloader)
-log_masks_every: 6
-batch_metrics_every: 6
-img_sampling_index: 6
+log_masks_every: 5
+batch_metrics_every: 5
+img_sampling_index: 5
 teacher:
   depth: 4
-  start_filts: 4
-  batch_size: 4
-  T_0: 5
+  start_filts: 32
+  batch_size: 16
+  T_0: 8
   T_mult: 2
-  eta_min: 0.0005
+  eta_min: 0.0003
   epochs: 120
-  lr: 0.001
+  lr: 0.002
   save: True
   save_dir: "./actia/workstation/Models/Teachers"
   log_dir: "./actia/workstation/logs/Teachers"
