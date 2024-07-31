@@ -12,32 +12,6 @@ torch.manual_seed(50)
 cfg = load_yaml()
 Unet_cfg = load_yaml(cfg['paths']['cfg']['Unet'])
 
-def ready_kernels(model):
-
-    encoders=model.encoders
-    bottleneck=model.bottleneck
-    decoders=model.decoders
-    kernels=[]
-
-    for module in encoders:
-        kernels.append(module.conv.conv1.weight.data.clone()[-3,-1])
-        kernels.append(module.conv.conv2.weight.data.clone()[-3,-1])
-        kernels.append(module.conv.conv3.weight.data.clone()[-3,-1])
-
-    kernels.append(bottleneck.conv1.weight.data.clone()[-1,-1])
-    kernels.append(bottleneck.conv2.weight.data.clone()[-1,-1])
-    kernels.append(bottleneck.conv3.weight.data.clone()[-1,-1])
-
-    for module in decoders:
-        kernels.append(module.conv.conv1.weight.data.clone()[-3,-1])
-        kernels.append(module.conv.conv2.weight.data.clone()[-3,-1])
-        kernels.append(module.conv.conv3.weight.data.clone()[-3,-1])
-
-    wandb_kernels=[]
-    for kernel in kernels:
-        wandb_kernels.append(wandb.Image(kernel.permute(0,1).cpu().numpy()))
-    return wandb_kernels
-
 def return_loggable_imgs(images, masks):
 
     if isinstance(images, torch.Tensor):
@@ -54,21 +28,20 @@ def return_loggable_imgs(images, masks):
     
     return wandb_images
 
-def ready_internal_masks(internal_masks):
-    if isinstance(internal_masks, torch.Tensor):
-        internal_masks = internal_masks.cpu().numpy()
-    wandb_masks=[]
-    for mask in internal_masks:
-        wandb_masks.append(wandb.Image(mask))
-    return wandb_masks
+# def ready_internal_masks(internal_masks):
+#     if isinstance(internal_masks, torch.Tensor):
+#         internal_masks = internal_masks.cpu().numpy()
+#     wandb_masks=[]
+#     for mask in internal_masks:
+#         wandb_masks.append(wandb.Image(mask))
+#     return wandb_masks
 
 def return_batch_metrics(criterion, outputs, masks):
 
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tp, fp, fn, tn = get_stats(outputs.argmax(dim=1), masks.argmax(dim=1), mode='multiclass',num_classes=19)
     metrics['loss'] = criterion(outputs, masks)
     metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
-    metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
     metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro-imagewise")
     return metrics
 
@@ -79,7 +52,7 @@ def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
     else:
         last_batch= Unet_cfg['last_batch']
     model.train()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tracked_images = None
     tracked_masks = None
     internal_masks=None
@@ -98,7 +71,7 @@ def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
         if batch == Unet_cfg['img_sampling_index'] & epoch%Unet_cfg['log_masks_every']==0:
             tracked_images = images
             tracked_masks = outputs
-            internal_masks=model.exp_forward(images)
+            # internal_masks=model.exp_forward(images)
         if batch >= last_batch:
             break
 
@@ -114,7 +87,7 @@ def val_step(model, dataloader, criterion, accelerator, epoch):
     else:
         last_batch= Unet_cfg['last_batch']
     model.eval()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tracked_images = None
     tracked_masks = None
     internal_masks=None
@@ -128,11 +101,10 @@ def val_step(model, dataloader, criterion, accelerator, epoch):
         batch_metrics['loss'] = batch_metrics['loss'].item()
         accelerator.log({"val_batches": batch_metrics, "batch": last_batch * epoch + batch})
 
-
         if batch == Unet_cfg['img_sampling_index'] & epoch%Unet_cfg['log_masks_every']==0:
             tracked_images = images
             tracked_masks = outputs
-            internal_masks=model.exp_forward(images)
+            # internal_masks=model.exp_forward(images)
         if batch >= last_batch:
             break
 
@@ -152,15 +124,13 @@ def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, acc
             val_tracked_images = epoch_val_metrics[1]
             val_tracked_masks = epoch_val_metrics[2]
             val_wandb_img_and_masks = return_loggable_imgs(val_tracked_images, val_tracked_masks)
-            val_wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
-            learned_kernels=ready_kernels(model)
+            # val_wandb_internal_representations=ready_internal_masks(epoch_val_metrics[3])
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics[0],
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
                 'val_mask_per_epoch': val_wandb_img_and_masks,
-                'val_internals_per_epoch':val_wandb_internal_representations,
-                'filters_per_epoch': learned_kernels,
+                # 'val_internals_per_epoch':val_wandb_internal_representations,
                 'lr':scheduler.get_last_lr()[0]
             }
         else:

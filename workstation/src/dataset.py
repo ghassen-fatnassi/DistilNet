@@ -6,7 +6,6 @@ from pathlib import Path
 from PIL import Image
 from utils import  load_yaml,UnetMaskProcessor
 from tqdm.autonotebook import trange,tqdm
-torch.manual_seed(50)
 
 class SegDataset(Dataset):
     def __init__(self, config=None):# mode is either train_val or test
@@ -27,8 +26,7 @@ class SegDataset(Dataset):
 
         self.T_for_both=v2.Compose([
             v2.RandomHorizontalFlip(p=0.1),
-            v2.RandomVerticalFlip(p=0.1),
-            v2.RandomRotation(degrees=20),
+            v2.RandomRotation(degrees=10),
         ])
         self.T_for_mask=v2.Compose([
             v2.Resize((self.D,self.D),interpolation=InterpolationMode.NEAREST),
@@ -41,7 +39,6 @@ class SegDataset(Dataset):
         return len(self.img_paths)//self.cfg['dataset']['divide']
     
     def __getitem__(self, index):
-        torch.manual_seed(50)
 
         img_path=self.img_paths[index]
         mask_path=self.mask_paths[index]

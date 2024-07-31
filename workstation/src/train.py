@@ -11,7 +11,7 @@ import os
 import json
 
 import dataset,utils,loss
-from Unet import segUnet
+from Unet import Unet,Res152Unet,Res34Unet
 from teacher_engine import engine
 
 torch.manual_seed(50)
@@ -46,7 +46,7 @@ num_classes = cfg['dataset']['num_classes']
 in_channels = Unet_cfg['in_channels']
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher = segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
+teacher = Res152Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 
 # Optimizer
 lr = Unet_cfg['teacher']['lr']
@@ -57,9 +57,9 @@ T_0 = Unet_cfg['teacher']['T_0']
 T_mult = Unet_cfg['teacher']['T_mult']
 eta_min = Unet_cfg['teacher']['eta_min']
 # Define the schedulers
-scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=4)
+scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=1)
 scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=T_0, T_mult=T_mult, eta_min=eta_min)
-scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[2])
+scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[3])
 
 # Loss function
 criterion = loss.WeightedCELoss()

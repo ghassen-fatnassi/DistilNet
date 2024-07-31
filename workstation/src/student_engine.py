@@ -12,48 +12,22 @@ torch.manual_seed(50)
 cfg = load_yaml()
 Unet_cfg = load_yaml(cfg['paths']['cfg']['Unet'])
 
-def ready_kernels(model):
+# def ready_internal_masks(student_internal_masks, teacher_internal_masks):
+#     if isinstance(student_internal_masks, torch.Tensor):
+#         student_internal_masks = student_internal_masks.cpu().numpy()
+#     if isinstance(teacher_internal_masks, torch.Tensor):
+#         teacher_internal_masks = teacher_internal_masks.cpu().numpy()
 
-    encoders=model.encoders
-    bottleneck=model.bottleneck
-    decoders=model.decoders
-    kernels=[]
+#     wandb_masks = []
+#     for student_mask, teacher_mask in zip(student_internal_masks, teacher_internal_masks):
+#         wandb_masks.append(
+#             wandb.Image(student_mask)
+#         )
+#         wandb_masks.append(
+#             wandb.Image(teacher_mask)
+#         )
 
-    for module in encoders:
-        kernels.append(module.conv.conv1.weight.data.clone()[-3,-1])
-        kernels.append(module.conv.conv2.weight.data.clone()[-2,-1])
-        kernels.append(module.conv.conv3.weight.data.clone()[-1,-1])
-
-    kernels.append(bottleneck.conv1.weight.data.clone()[-5,-1])
-    kernels.append(bottleneck.conv2.weight.data.clone()[-6,-1])
-    kernels.append(bottleneck.conv3.weight.data.clone()[-7,-1])
-
-    for module in decoders:
-        kernels.append(module.conv.conv1.weight.data.clone()[-1,-1])
-        kernels.append(module.conv.conv2.weight.data.clone()[-2,-1])
-        kernels.append(module.conv.conv3.weight.data.clone()[-3,-1])
-
-    wandb_kernels=[]
-    for kernel in kernels:
-        wandb_kernels.append(wandb.Image(kernel.permute(0,1).cpu().numpy()))
-    return wandb_kernels
-
-def ready_internal_masks(student_internal_masks, teacher_internal_masks):
-    if isinstance(student_internal_masks, torch.Tensor):
-        student_internal_masks = student_internal_masks.cpu().numpy()
-    if isinstance(teacher_internal_masks, torch.Tensor):
-        teacher_internal_masks = teacher_internal_masks.cpu().numpy()
-
-    wandb_masks = []
-    for student_mask, teacher_mask in zip(student_internal_masks, teacher_internal_masks):
-        wandb_masks.append(
-            wandb.Image(student_mask)
-        )
-        wandb_masks.append(
-            wandb.Image(teacher_mask)
-        )
-
-    return wandb_masks
+#     return wandb_masks
 
 def return_loggable_imgs(images, student_masks, teacher_masks):
     if isinstance(images, torch.Tensor):
@@ -77,11 +51,10 @@ def return_loggable_imgs(images, student_masks, teacher_masks):
     return wandb_images
 def return_batch_metrics(criterion, teacher_outputs, student_outputs, masks):
     
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tp, fp, fn, tn = get_stats(student_outputs.argmax(dim=1), masks.argmax(dim=1), mode='multiclass',num_classes=19)
     metrics['loss'] = criterion(student_outputs, masks, teacher_outputs)
     metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
-    metrics['f1'] = f1_score(tp, fp, fn, tn, reduction="micro")
     metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro-imagewise")
     return metrics
 
@@ -92,7 +65,7 @@ def train_step(student, teacher, dataloader, criterion, optimizer, accelerator, 
         last_batch= Unet_cfg['last_batch']
     student.train()
     teacher.eval()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     for batch, (images, masks) in enumerate(tqdm(dataloader)):
         with accelerator.autocast():
             student_outputs = student(images)
@@ -123,7 +96,7 @@ def val_step(student, teacher, dataloader, criterion, accelerator, epoch):
         last_batch= Unet_cfg['last_batch']    
     student.eval()
     teacher.eval()
-    metrics = {'loss': 0.0, 'miou': 0.0, 'f1': 0.0, 'recall': 0.0}
+    metrics = {'loss': 0.0, 'miou': 0.0, 'recall': 0.0}
     tracked_images = None
     tracked_student_masks = None
     tracked_teacher_masks = None
@@ -144,8 +117,8 @@ def val_step(student, teacher, dataloader, criterion, accelerator, epoch):
             tracked_images = images
             tracked_student_masks = student_outputs
             tracked_teacher_masks = teacher_outputs
-            student_internal_masks = student.exp_forward(images)
-            teacher_internal_masks = teacher.exp_forward(images)
+            # student_internal_masks = student.exp_forward(images)
+            # teacher_internal_masks = teacher.exp_forward(images)
 
         if batch >= last_batch:
             break
@@ -160,7 +133,8 @@ def engine(student, teacher, train_loader, val_loader, criterion, optimizer, sch
         epoch_train_metrics = train_step(student, teacher, train_loader, criterion, optimizer, accelerator, epoch)
         epoch_val_metrics = val_step(student, teacher, val_loader, criterion, accelerator, epoch)
         scheduler.step()
-          
+        if(Unet_cfg['student']['decay_alpha']):
+            criterion.step_alpha()  
         if epoch % Unet_cfg['log_masks_every'] == 0:
             
             val_tracked_images = epoch_val_metrics[1]
@@ -170,15 +144,13 @@ def engine(student, teacher, train_loader, val_loader, criterion, optimizer, sch
             val_teacher_internal_masks = epoch_val_metrics[5]
             
             wandb_img_and_masks = return_loggable_imgs(val_tracked_images,val_tracked_student_masks, val_tracked_teacher_masks)
-            wandb_internal_representations = ready_internal_masks(val_student_internal_masks,val_teacher_internal_masks)
-            student_learned_kernels = ready_kernels(student)
+            # wandb_internal_representations = ready_internal_masks(val_student_internal_masks,val_teacher_internal_masks)
             epoch_metrics = {
                 'train_epochs': epoch_train_metrics,
                 'val_epochs': epoch_val_metrics[0],
                 'epoch': epoch,
                 'mask_per_epoch': wandb_img_and_masks,
-                'internals_per_epoch': wandb_internal_representations,
-                'filters_per_epoch': student_learned_kernels,
+                # 'internals_per_epoch': wandb_internal_representations,
                 'lr':scheduler.get_last_lr()[0]
             }
         else:

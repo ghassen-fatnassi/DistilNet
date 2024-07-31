@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from utils import load_yaml
-
+import numpy as np
 torch.manual_seed(50)
 
 cfg = load_yaml()
@@ -36,11 +36,13 @@ class TverskyCEDiceWeightedLoss(nn.Module):
 class WeightedDistillationLoss(nn.Module):
     """Distillation loss."""
     
-    def __init__(self,temperature,alpha=0.5):
+    def __init__(self,temperature,epochs,alpha=0.5):
         super().__init__()
         self.ce_loss = WeightedCELoss()
         self.temperature = temperature
         self.alpha = alpha
+        self.epochs=epochs
+        self.coeff=self.epochs/100
 
     def forward(self, student_out,true_mask, teacher_out):
 
@@ -54,3 +56,6 @@ class WeightedDistillationLoss(nn.Module):
     def to(self,device):
         self.ce_loss=self.ce_loss.to(device)
         return super(WeightedDistillationLoss,self).to(device) 
+    
+    def step_alpha(self):
+        self.alpha = np.exp(-self.coeff * self.alpha / self.epochs)

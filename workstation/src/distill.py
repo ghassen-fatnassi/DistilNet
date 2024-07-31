@@ -11,7 +11,7 @@ import os
 import json
 
 import dataset,utils,loss
-from Unet import segUnet
+from actia.workstation.src.Unet import Unet
 from student_engine import engine
 
 torch.manual_seed(50)
@@ -46,12 +46,12 @@ in_channels = Unet_cfg['in_channels']
 num_classes = cfg['dataset']['num_classes']
 depth = Unet_cfg['student']['depth']
 start_filts = Unet_cfg['student']['start_filts']
-student = segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
+student = Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
 
 # Teacher Model configuration
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher= segUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
+teacher= Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
 teacher.load_state_dict(safetensors.torch.load_file(Unet_cfg['student']['teacher_weight_dir']))
 
 # Optimizer
@@ -67,7 +67,7 @@ scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0
 scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[4])
 
 # Loss function
-criterion = loss.WeightedDistillationLoss(Unet_cfg['student']['temperature'], Unet_cfg['student']['alpha'])
+criterion = loss.WeightedDistillationLoss(Unet_cfg['student']['temperature'],Unet_cfg['student']['epochs'],Unet_cfg['student']['alpha'])
 
 # teacher* the model
 # Accelerator setup
