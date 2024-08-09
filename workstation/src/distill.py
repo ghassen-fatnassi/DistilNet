@@ -11,7 +11,7 @@ import os
 import json
 
 import dataset,utils,loss
-from actia.workstation.src.Unet import Unet
+from actia.workstation.src.Unet import Unet,midEffUnet
 from student_engine import engine
 
 torch.manual_seed(50)
@@ -51,7 +51,7 @@ student = Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, st
 # Teacher Model configuration
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher= Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts,negative_slope=0.01)
+teacher= midEffUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 teacher.load_state_dict(safetensors.torch.load_file(Unet_cfg['student']['teacher_weight_dir']))
 
 # Optimizer

@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader, random_split
-from torch.optim import Adam, SGD, AdamW, Adamax
-from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau,CosineAnnealingWarmRestarts,StepLR,SequentialLR
+from torch.optim import Adam, SGD, AdamW, Adamax,SparseAdam
+from torch.optim.lr_scheduler import ReduceLROnPlateau,CosineAnnealingWarmRestarts,StepLR,SequentialLR
 from accelerate import Accelerator
 import safetensors.torch
 import wandb
@@ -11,7 +11,7 @@ import os
 import json
 
 import dataset,utils,loss
-from Unet import Unet,Res152Unet,Res34Unet
+from Unet import Res50Unet
 from teacher_engine import engine
 
 torch.manual_seed(50)
@@ -46,20 +46,13 @@ num_classes = cfg['dataset']['num_classes']
 in_channels = Unet_cfg['in_channels']
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher = Res152Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 
-# Optimizer
+teacher = Res50Unet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+
+
 lr = Unet_cfg['teacher']['lr']
 optimizer = Adam(teacher.parameters(), lr=lr)
-
-# Scheduler
-T_0 = Unet_cfg['teacher']['T_0']
-T_mult = Unet_cfg['teacher']['T_mult']
-eta_min = Unet_cfg['teacher']['eta_min']
-# Define the schedulers
-scheduler1 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=1)
-scheduler2 = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=T_0, T_mult=T_mult, eta_min=eta_min)
-scheduler = torch.optim.lr_scheduler.SequentialLR(optimizer, schedulers=[scheduler1, scheduler2], milestones=[3])
+scheduler = StepLR(optimizer,step_size=4,gamma=0.3)
 
 # Loss function
 criterion = loss.WeightedCELoss()
@@ -67,7 +60,7 @@ criterion = loss.WeightedCELoss()
 # Accelerator setup
 accelerator = Accelerator(log_with="wandb")
 accelerator.init_trackers(project_name="ACTIA", config={'teacher':Unet_cfg['teacher'],'id':identity})
-accelerator.trackers[0].run.name = f'basicKD::teacher_id={identity}'
+accelerator.trackers[0].run.name = f'res50_64_4={identity}'
 # Prepare model and data for accelerator
 teacher, optimizer, criterion, scheduler, train_loader, val_loader = accelerator.prepare(
     teacher, optimizer, criterion, scheduler, train_loader, val_loader

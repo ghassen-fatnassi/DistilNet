@@ -98,85 +98,36 @@ class Unet(nn.Module):
         
         return self.internal_masks
 
-class Res34Unet(nn.Module): #encoder is 21 M params
-    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4):
+class Res50Unet(nn.Module):
+    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4, negative_slope=0.01):
         super().__init__()
 
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.depth = depth
-        self.start_filts=start_filts 
+        self.negative_slope=negative_slope
+        self.start_filts=start_filts
         self.internal_masks=[]
 
         decoder_channels=tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
-        self.model =  smp.Unet(
-            encoder_name="resnet34",
-            encoder_weights="imagenet",
-            decoder_use_batchnorm=True,
-            decoder_channels=decoder_channels,
-            encoder_depth=self.depth ,
-            in_channels=self.in_channels,
-            classes=num_classes,
-        )
 
-    def forward(self, inputs):
-        return self.model(inputs)
-    
-    def to(self,device):
-        self.model=self.model.to(device)
-        return super().to(device)
-
-class Res152Unet(nn.Module): #encoder is 152 M params
-    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4):
-        super().__init__()
-
-        self.num_classes = num_classes
-        self.in_channels = in_channels
-        self.depth = depth
-        self.start_filts=start_filts 
-        self.internal_masks=[]
-
-        decoder_channels=tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
-        self.model =  smp.Unet(
-            encoder_name="resnet152",
-            encoder_weights="imagenet",
-            decoder_use_batchnorm=True,
-            decoder_channels=decoder_channels,
-            encoder_depth=self.depth ,
-            in_channels=self.in_channels,
-            classes=num_classes,
-        )
-
-    def forward(self, inputs):
-        return self.model(inputs)
-    
-    def to(self,device):
-        self.model=self.model.to(device)
-        return super().to(device)
-    
-class largeEffUnet(nn.Module):#encoder is 474 M params
-    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4):
-        super().__init__()
-
-        self.num_classes = num_classes
-        self.in_channels = in_channels
-        self.depth = depth
-        self.start_filts=start_filts 
-        self.internal_masks=[]
-
-        decoder_channels=tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
-        self.model =  smp.Unet(
-            encoder_name="timm-efficientnet-l2",
-            encoder_weights="noisy-student-475",
-            decoder_use_batchnorm=True,
-            decoder_channels=decoder_channels,
+        self.model =  smp.UnetPlusPlus(
+            encoder_name='resnet152',
             encoder_depth=self.depth,
+            encoder_weights='imagenet',
+            decoder_use_batchnorm=True,
+            decoder_channels=decoder_channels,
+            decoder_attention_type="scse",
             in_channels=self.in_channels,
-            classes=num_classes
-        )
+            classes=self.num_classes,
+            activation=None,
+            aux_params=None
+            )
+
     def forward(self, inputs):
         return self.model(inputs)
     
     def to(self,device):
         self.model=self.model.to(device)
         return super().to(device)
+

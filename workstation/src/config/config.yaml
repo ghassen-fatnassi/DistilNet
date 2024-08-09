@@ -4,28 +4,28 @@ dataset:
   divide: 1 #replace by 1 if u want to use the full dataset
   img_type: "jpg"
   mask_type: "png"
-  num_classes: 19
+  num_classes: 12
   class_labels:
   class_weights: [
       1.0, # road
-      1.5, # sidewalk
+      2.0, # sidewalk
       1.0, # building
-      2.0, # wall
+      1.0, # wall
       2.0, # fence
-      2.0, # pole
-      3.0, # traffic light
-      3.0, # traffic sign
+      # 0.0, # pole
+      # 0.0, # traffic light
+      # 0.0, # traffic sign
       1.0, # vegetation
       2.0, # terrain
-      1.5, # sky
-      3.0, # person
-      3.0, # rider
+      1.0, # sky
+      2.0, # person
+      2.0, # rider
       1.0, # car
-      3.0, # truck
-      3.0, # bus
-      3.0, # train
-      3.0, # motorcycle
-      3.0, # bicycle
+      2.0, # truck
+      # 0.0, # bus
+      # 0.0, # train
+      # 0.0, # motorcycle
+      # 0.0, # bicycle
     ]
 
 wandb:

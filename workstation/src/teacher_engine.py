@@ -18,14 +18,13 @@ def return_loggable_imgs(images, masks):
         images = images.permute(0, 2, 3, 1).cpu().numpy()
     if isinstance(masks, torch.Tensor):
         masks = masks.permute(0, 2, 3, 1).cpu().numpy()
-    
+
     single_channel_masks = np.argmax(masks, axis=-1)
     class_labels = UnetMaskProcessor().class_labels
     wandb_images = []
 
-    for img, mask in zip(images, single_channel_masks):
-        wandb_images.append(wandb.Image(img, masks={"predictions": {"mask_data": mask, "class_labels": class_labels}}))
-    
+    for img, pred_mask in zip(images, single_channel_masks):
+        wandb_images.append(wandb.Image(img, masks={"predictions": {"mask_data": pred_mask, "class_labels": class_labels}}))
     return wandb_images
 
 # def ready_internal_masks(internal_masks):
@@ -41,8 +40,8 @@ def return_batch_metrics(criterion, outputs, masks):
     metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tp, fp, fn, tn = get_stats(outputs.argmax(dim=1), masks.argmax(dim=1), mode='multiclass',num_classes=19)
     metrics['loss'] = criterion(outputs, masks)
-    metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro")
-    metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro-imagewise")
+    metrics['miou'] = iou_score(tp, fp, fn, tn, reduction="micro",class_weights=cfg['dataset']['class_weights'])
+    metrics['recall'] = recall(tp, fp, fn, tn, reduction="micro",class_weights=cfg['dataset']['class_weights'])
     return metrics
 
 def train_step(model, dataloader, criterion, optimizer, accelerator, epoch):
@@ -90,7 +89,6 @@ def val_step(model, dataloader, criterion, accelerator, epoch):
     metrics = {'loss': 0.0, 'miou': 0.0,'recall': 0.0}
     tracked_images = None
     tracked_masks = None
-    internal_masks=None
 
     for batch, (images, masks) in enumerate(dataloader):
         with accelerator.autocast():
@@ -104,7 +102,7 @@ def val_step(model, dataloader, criterion, accelerator, epoch):
         if batch == Unet_cfg['img_sampling_index'] & epoch%Unet_cfg['log_masks_every']==0:
             tracked_images = images
             tracked_masks = outputs
-            # internal_masks=model.exp_forward(images)
+
         if batch >= last_batch:
             break
 
@@ -112,11 +110,15 @@ def val_step(model, dataloader, criterion, accelerator, epoch):
             metrics[key] += batch_metrics[key] / last_batch
 
 
-    return metrics, tracked_images, tracked_masks,internal_masks
+    return metrics, tracked_images, tracked_masks
 
 def engine(model, train_loader, val_loader, criterion, optimizer, scheduler, accelerator, epochs):
 
     for epoch in trange(epochs):
+        if(epoch<=20):
+            for param in model.model.encoder.parameters():
+                param.requires_grad = False
+
         epoch_train_metrics = train_step(model, train_loader, criterion, optimizer, accelerator, epoch)
         epoch_val_metrics = val_step(model, val_loader, criterion, accelerator, epoch)
         scheduler.step()
