@@ -13,6 +13,11 @@ def load_yaml(config_path="./actia/workstation/src/config/config.yaml"):
         config = yaml.safe_load(file)
     return config
 
+"""overwriting they yaml file"""
+def change_yaml(new_dict,config_path="./actia/workstation/src/config/config.yaml"):
+    with open(config_path, 'w') as file:
+        yaml.dump(new_dict,file,default_flow_style=False)
+
 class UnetMaskProcessor:
     def __init__(self):
         """Cityscapes color_map"""
@@ -22,9 +27,9 @@ class UnetMaskProcessor:
             (70, 70, 70),     # Building
             (102, 102, 156),  # Wall
             (190, 153, 153),  # Fence
-            # (153, 153, 153),  # Pole
-            # (250, 170, 30),   # Traffic Light
-            # (220, 220, 0),    # Traffic Sign
+            (153, 153, 153),  # Pole
+            (250, 170, 30),   # Traffic Light
+            (220, 220, 0),    # Traffic Sign
             (107, 142, 35),   # Vegetation
             (152, 251, 152),  # Terrain
             (70, 130, 180),   # Sky
@@ -32,31 +37,33 @@ class UnetMaskProcessor:
             (255, 0, 0),      # Rider
             (0, 0, 142),      # Car
             (0, 0, 70),       # Truck
-            # (0, 60, 100),     # Bus
-            # (0, 80, 100),     # Train
-            # (0, 0, 230),      # Motorcycle
-            # (119, 11, 32),    # Bicycle
+            (0, 60, 100),     # Bus
+            (0, 80, 100),     # Train
+            (0, 0, 230),      # Motorcycle
+            (119, 11, 32),    # Bicycle
         ]
-        self.class_labels={0: 'Road', 
-                           1: 'Sidewalk', 
-                           2: 'Building', 
-                           3: 'Wall', 
-                           4: 'Fence', 
-                        #    5: 'Pole', 
-                        #    6: 'Traffic Light', 
-                        #    7: 'Traffic Sign', 
-                           5: 'Vegetation', 
-                           6: 'Terrain', 
-                           7: 'Sky', 
-                           8: 'Person', 
-                           9: 'Rider', 
-                           10: 'Car', 
-                           11: 'Truck',
-                        #    15: 'Bus', 
-                        #    16: 'Train', 
-                        #    17: 'Motorcycle', 
-                        #    18: 'Bicycle'
-                            }
+        self.class_labels = {
+            0: 'Road', 
+            1: 'Sidewalk', 
+            2: 'Building', 
+            3: 'Wall', 
+            4: 'Fence', 
+            5: 'Pole', 
+            6: 'Traffic Light', 
+            7: 'Traffic Sign', 
+            8: 'Vegetation', 
+            9: 'Terrain', 
+            10: 'Sky', 
+            11: 'Person', 
+            12: 'Rider', 
+            13: 'Car', 
+            14: 'Truck',
+            15: 'Bus', 
+            16: 'Train', 
+            17: 'Motorcycle', 
+            18: 'Bicycle'
+        }
+
         self.num_classes = len(self.color_map)
         
     def one_hotting_mask(self, mask):
@@ -71,7 +78,7 @@ class UnetMaskProcessor:
         return one_hot_mask
 
 class datasetSplitter:
-    def __init__(self, dataset, batch_size, test_split=0.2, random_seed=42):
+    def __init__(self, dataset, batch_size, test_split=0.3, random_seed=7):
         self.dataset = dataset
         self.batch_size = batch_size
         self.test_split = test_split
@@ -89,7 +96,7 @@ class datasetSplitter:
         test_dataset.dataset.augment=False
 
         # Create data loaders
-        self.train_loader = DataLoader(train_dataset,batch_size=self.batch_size ,num_workers=4,shuffle=True,prefetch_factor=16)
-        self.test_loader = DataLoader(test_dataset, batch_size=self.batch_size, num_workers=4,shuffle=False,prefetch_factor=16)
+        self.train_loader = DataLoader(train_dataset,batch_size=self.batch_size ,num_workers=2,persistent_workers=True,shuffle=True,prefetch_factor=128)
+        self.test_loader = DataLoader(test_dataset, batch_size=self.batch_size, num_workers=2,persistent_workers=True,shuffle=False,prefetch_factor=128)
 
         return self.train_loader, self.test_loader

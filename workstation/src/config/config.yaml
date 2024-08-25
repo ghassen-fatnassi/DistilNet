@@ -1,38 +1,34 @@
 dataset:
-  train_imgs_dir: "./actia/workstation/data/X/images"
-  train_masks_dir: "./actia/workstation/data/X/labels"
-  divide: 1 #replace by 1 if u want to use the full dataset
-  img_type: "jpg"
-  mask_type: "png"
-  num_classes: 12
-  class_labels:
-  class_weights: [
-      1.0, # road
-      2.0, # sidewalk
-      1.0, # building
-      1.0, # wall
-      2.0, # fence
-      # 0.0, # pole
-      # 0.0, # traffic light
-      # 0.0, # traffic sign
-      1.0, # vegetation
-      2.0, # terrain
-      1.0, # sky
-      2.0, # person
-      2.0, # rider
-      1.0, # car
-      2.0, # truck
-      # 0.0, # bus
-      # 0.0, # train
-      # 0.0, # motorcycle
-      # 0.0, # bicycle
-    ]
-
-wandb:
-  API_KEY: "960c7d1edaf53d6de7137290cfcbbc610b77fc67"
-  silent: "true" # true or false
-
+  class_weights:
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  divide: 1
+  img_type: jpg
+  mask_type: png
+  num_classes: 19
+  train_imgs_dir: ./actia/workstation/data/XX/images
+  train_masks_dir: ./actia/workstation/data/XX/labels
 paths:
   cfg:
-    Unet: "./actia/workstation/src/config/Unet.yaml"
-    SegFormer: "./actia/workstation/src/config/SegFormer.yaml"
+    SegFormer: ./actia/workstation/src/config/SegFormer.yaml
+    Unet: ./actia/workstation/src/config/Unet.yaml
+wandb:
+  API_KEY: 75fb19bcedae1a5456d20fbdf6bcbf2c9603f1b3
+  silent: "true"
