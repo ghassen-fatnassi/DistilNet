@@ -1,5 +1,0 @@
-cd drive/MyDrive/ACTIA/workstation
-pip install -r reqs.txt
-accelerate config
-python -m src.main.Unet.response_KD.train
-raka7 fazet Mode P in IMage for masks(check it thoroughly)

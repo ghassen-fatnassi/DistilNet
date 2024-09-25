@@ -85,4 +85,4 @@ class StudentLoss(nn.Module):
     
     def step_alpha(self,curr_epoch):
         if self.epochs!=None:
-            self.alpha = self.alpha+(-(self.alpha-0.2)/self.epochs)*curr_epoch
+            self.alpha = self.alpha+(-(self.alpha-0.1)/self.epochs)*curr_epoch

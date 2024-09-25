@@ -10,7 +10,7 @@ import datetime
 import os
 import json
 import dataset,utils,loss
-from Unet import studentUnet,teacherUnet,Unet
+from Unet import StudentUnetWithDropout,TeacherUnetWithDropout,Unet
 from myTransformers import teacherSegformer
 from response_distillation import engine
 
@@ -30,9 +30,9 @@ def generate_timestamp_id():
     now = datetime.datetime.now()
     timestamp_id = now.strftime("%Y%m%d_%H%M%S")
     return timestamp_id
-identity="2"
+identity="gradual=true"
 
-batch_size = Unet_cfg['teacher']['batch_size']
+batch_size = Unet_cfg['student']['batch_size']
 data = dataset.SegDataset()
 train_loader, val_loader = utils.datasetSplitter(data, batch_size).split() # if i wanna change the split , i just gotta change random seed in here
 
@@ -40,47 +40,21 @@ in_channels = Unet_cfg['in_channels']
 num_classes = cfg['dataset']['num_classes']
 depth = Unet_cfg['student']['depth']
 start_filts = Unet_cfg['student']['start_filts']
-student = studentUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+student = StudentUnetWithDropout(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 
 
 
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher= teacherUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+teacher= TeacherUnetWithDropout(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 teacher.load_state_dict(safetensors.torch.load_file(Unet_cfg['student']['teacher_weight_dir']))
 
 lr = Unet_cfg['student']['lr']
 optimizer = Adam(student.parameters(), lr=lr)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.85)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.8)
 
 
-##Coarse
 criterion1 = loss.StudentLoss(epochs=Unet_cfg['student']['epochs'],temperature=Unet_cfg['student']['temperature'],alpha=Unet_cfg['student']['alpha'],method1=Unet_cfg['student']['method1'],method2=Unet_cfg['student']['method2'])
-criterion2 = loss.StudentLoss(epochs=Unet_cfg['student']['epochs'],temperature=Unet_cfg['student']['temperature'],alpha=0.0,method1=Unet_cfg['student']['method1'],method2=Unet_cfg['student']['method2']) # can also be JaccardLoss , DiceLoss, FocalLoss
-accelerator = Accelerator(log_with="wandb")
-accelerator.init_trackers(project_name="ACTIA", config={'student':Unet_cfg['student'],'teacher':Unet_cfg['teacher'],'id':identity})
-accelerator.trackers[0].run.name = f'method=basicKD_student_id={identity}'
-student, teacher, optimizer, criterion1,criterion2, scheduler, train_loader, val_loader = accelerator.prepare(
-    student, teacher, optimizer, criterion1,criterion2, scheduler, train_loader, val_loader
-)
-engine(student,teacher, train_loader, val_loader, criterion1,criterion2, optimizer, scheduler, accelerator,epochs=Unet_cfg['student']['epochs'])
-accelerator.end_training()
-accelerator.wait_for_everyone()
-
-#config_change=
-cfg['train_imgs_dir']='./actia/workstation/data/X/images'
-cfg['train_masks_dir']='./actia/workstation/data/X/labels'
-utils.change_yaml(cfg)
-##Fine
-lr = 0.005
-optimizer = Adam(student.parameters(), lr=lr)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.85)
-
-data = dataset.SegDataset()
-train_loader, val_loader = utils.datasetSplitter(data, batch_size).split() # if i wanna change the split , i just gotta change random seed in here
-
-
-criterion1 = loss.StudentLoss(epochs=Unet_cfg['student']['epochs'],temperature=Unet_cfg['student']['temperature'],alpha=0.5,method1=Unet_cfg['student']['method1'],method2=Unet_cfg['student']['method2'])
 criterion2 = loss.StudentLoss(epochs=Unet_cfg['student']['epochs'],temperature=Unet_cfg['student']['temperature'],alpha=0.0,method1=Unet_cfg['student']['method1'],method2=Unet_cfg['student']['method2']) # can also be JaccardLoss , DiceLoss, FocalLoss
 accelerator = Accelerator(log_with="wandb")
 accelerator.init_trackers(project_name="ACTIA", config={'student':Unet_cfg['student'],'teacher':Unet_cfg['teacher'],'id':identity})

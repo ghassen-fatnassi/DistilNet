@@ -113,6 +113,7 @@ def engine(student, teacher, train_loader, val_loader, criterion1, criterion2, o
                 'epoch': epoch,
                 'mask_per_epoch': wandb_img_and_masks,
                 'lr': scheduler.get_last_lr()[0],
+                'alpha':criterion1.alpha
             }
         else:
             epoch_metrics = {

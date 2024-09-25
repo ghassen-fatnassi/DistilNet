@@ -8,7 +8,7 @@ import logging
 import datetime
 import os
 import dataset, utils, loss
-from Unet import studentUnet,teacherUnet
+from Unet import StudentUnetWithDropout,TeacherUnetWithDropout,Unet
 from myTransformers import teacherSegformer
 from teacher_training import engine
 
@@ -31,12 +31,12 @@ num_classes = cfg['dataset']['num_classes']
 in_channels = Unet_cfg['in_channels']
 depth = Unet_cfg['teacher']['depth']
 start_filts = Unet_cfg['teacher']['start_filts']
-teacher = teacherUnet(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
+teacher = StudentUnetWithDropout(num_classes=num_classes, in_channels=in_channels, depth=depth, start_filts=start_filts)
 for param in teacher.model.encoder.parameters():
     param.requires_grad = False
 lr = Unet_cfg['teacher']['lr']
 optimizer = AdamW(teacher.parameters(), lr=lr)
-scheduler = StepLR(optimizer, step_size=4, gamma=0.4)
+scheduler = StepLR(optimizer, step_size=1, gamma=0.8)
 
 criterion = loss.HardLoss(method=Unet_cfg['teacher']['method_fine'])
 

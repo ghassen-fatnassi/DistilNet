@@ -1,116 +1,86 @@
 import torch
 import torch.nn as nn
-import timm
-import numpy as np
 import segmentation_models_pytorch as smp
 torch.manual_seed(50)
 
-class conv_block(nn.Module):
-    def __init__(self, in_c, out_c,negative_slope):
+class ConvBlock(nn.Module):
+    def __init__(self, in_c, out_c, negative_slope):
         super().__init__()
         self.conv1 = nn.Conv2d(in_c, out_c, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=5, padding=2)
-        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1,bias=False)
+        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1, bias=False)
         self.bn = nn.BatchNorm2d(out_c)
         self.relu = nn.LeakyReLU(negative_slope=negative_slope)
 
     def forward(self, inputs):
-        return self.relu(self.bn(self.conv3(self.relu(self.conv2(self.relu(self.conv1(inputs)))))))
-
-class encoder_block(nn.Module):
-    def __init__(self, in_c, out_c,negative_slope):
-        super().__init__()
-        self.conv = conv_block(in_c, out_c, negative_slope)
-        self.pool = nn.MaxPool2d((2, 2))
-
-    def forward(self, inputs):
-        x = self.conv(inputs)
-        p = self.pool(x)
-        return x, p
-
-class decoder_block(nn.Module):
-    def __init__(self, in_c, out_c,negative_slope):
+        x = self.conv1(inputs)
+        x = self.relu(x)
+        x = self.conv2(x)
+        x = self.relu(x)
+        x = self.conv3(x)
+        x = self.bn(x)
+        x = self.relu(x)
+        return x
+class DecoderBlock(nn.Module):
+    def __init__(self, in_c, out_c, negative_slope):
         super().__init__()
         self.up = nn.ConvTranspose2d(in_c, out_c, kernel_size=2, stride=2)
-        self.conv = conv_block(2 * out_c, out_c,negative_slope)
-
+        self.conv = ConvBlock(2 * out_c, out_c, negative_slope)
+        self.dropout = nn.Dropout(p=0.4)  # Dropout with probability 0.4
     def forward(self, inputs, skip):
         x = self.up(inputs)
-        x = torch.cat([x, skip], dim=1)
+        x = torch.cat([x, skip], dim=1)  # Concatenate skip connection
         x = self.conv(x)
+        x = self.dropout(x)  # Apply dropout
         return x
-
+        
 class Unet(nn.Module):
-    def __init__(self, num_classes, in_channels=3, depth=5, start_filts=64,negative_slope=0.01):
+    def __init__(self, num_classes, in_channels=3, start_filts=64, depth=5, negative_slope=0.00001):
         super().__init__()
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.start_filts = start_filts
+        self.negative_slope = negative_slope
         self.depth = depth
-        self.negative_slope=negative_slope
-        self.internal_masks=[]
-        self.skips=[]
-
-        """ Encoders """
-        self.encoders = nn.ModuleList([encoder_block(in_channels, self.start_filts,self.negative_slope)])
-        self.encoders.extend([encoder_block(self.start_filts * (2 ** i), self.start_filts * (2 ** (i + 1)),self.negative_slope*i) for i in range(depth - 1)])
-
+        """ ResNet50 as Encoder """
+        self.encoder = smp.encoders.get_encoder("resnet50", in_channels=in_channels, depth=self.depth, weights="imagenet")
+        
+        encoder_channels = self.encoder.out_channels
         """ Bottleneck """
-        self.bottleneck = conv_block(self.start_filts * (2 ** (depth - 1)), self.start_filts * (2 ** depth),self.negative_slope)
-
-        """ Decoders """
-        self.decoders = nn.ModuleList([decoder_block(self.start_filts * (2 ** i), self.start_filts * (2 ** (i - 1)),self.negative_slope*i) for i in range(depth, 0, -1)])
-
+        self.bottleneck = ConvBlock(encoder_channels[-1], encoder_channels[-2], self.negative_slope)
+        """ Decoders with Dropout """
+        self.decoders = nn.ModuleList([
+            DecoderBlock(encoder_channels[i] + encoder_channels[i-1], encoder_channels[i-1], self.negative_slope) 
+            for i in range(len(encoder_channels)-1, 0, -1)
+        ])
         """ Classifier """
-        self.outputs = nn.Conv2d(self.start_filts, num_classes, kernel_size=1)
+        self.outputs = nn.Conv2d(encoder_channels[1], num_classes, kernel_size=1)
 
     def forward(self, inputs):
-        x = inputs
-        self.skips=[]
-        for encoder in self.encoders:
-            x, p = encoder(x)
-            self.skips.append(x)
-            x = p
-
+        """ Encoder Pass """
+        skips = self.encoder(inputs)
+        x = skips[-1]  # Last feature map from the encoder
+        """ Bottleneck """
         x = self.bottleneck(x)
-
+        """ Decoder Pass with Skip Connections and Dropout """
         for i, decoder in enumerate(self.decoders):
-            x = decoder(x, self.skips[-(i+1)])
+            x = decoder(x, skips[-(i+2)])  # Concatenate encoder output with decoder input
         outputs = self.outputs(x)
         return outputs
     
-    def exp_forward(self,inputs):
-        self.skips = []
-        self.internal_masks=[]
-        x = inputs
-        self.internal_masks.append(x[-1])
-        for encoder in self.encoders:
-            x, p = encoder(x)
-            self.internal_masks.append(x[-1,-1])
-            self.skips.append(x)
-            x = p
-        self.internal_masks.append(x[-1,-1])
-        x = self.bottleneck(x)
-
-        for i, decoder in enumerate(self.decoders):
-            self.internal_masks.append(x[-1,-1])
-            x = decoder(x, self.skips[-(i+1)])
-        
-        return self.internal_masks
-
-class studentUnet(nn.Module):
-    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4):
+class StudentUnetWithDropout(nn.Module):
+    def __init__(self, num_classes, in_channels=3, start_filts=64, depth=4, dropout_prob=0.3):
         super().__init__()
 
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.depth = depth
-        self.start_filts=start_filts
-        self.internal_masks=[]
+        self.start_filts = start_filts
+        self.internal_masks = []
 
-        decoder_channels=tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
+        decoder_channels = tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
 
-        self.model =  smp.Unet(
+        self.model = smp.Unet(
             encoder_name='timm-mobilenetv3_small_minimal_100',
             encoder_depth=self.depth,
             encoder_weights='imagenet',
@@ -120,32 +90,34 @@ class studentUnet(nn.Module):
             in_channels=self.in_channels,
             classes=self.num_classes,
             activation=None,
+        )
+
+        for i in range(len(self.model.decoder.blocks)):
+            self.model.decoder.blocks[i] = SequentialPP(
+                self.model.decoder.blocks[i],   
+                nn.Dropout2d(p=dropout_prob)
             )
-        self.dropout = nn.Dropout(p=0.3)
-        self.conv = nn.Conv2d(in_channels=num_classes, out_channels=num_classes, kernel_size=3, padding=1)
 
     def forward(self, inputs):
-        return self.conv(self.dropout(self.model(inputs)))
+        return self.model(inputs)
     
-    def to(self,device):
-        self.model=self.model.to(device)
-        self.dropout=self.dropout.to(device)
-        self.conv=self.conv.to(device)
+    def to(self, device):
+        self.model = self.model.to(device)
         return super().to(device)
 
-class teacherUnet(nn.Module):
-    def __init__(self, num_classes, in_channels=3,start_filts=64, depth=4):
+class TeacherUnetWithDropout(nn.Module):
+    def __init__(self, num_classes, in_channels=3, start_filts=64, depth=4, dropout_prob=0.2):
         super().__init__()
 
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.depth = depth
-        self.start_filts=start_filts
-        self.internal_masks=[]
+        self.start_filts = start_filts
+        self.internal_masks = []
 
-        decoder_channels=tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
+        decoder_channels = tuple([(2**i)*self.start_filts for i in range(self.depth,0,-1)])
 
-        self.model =  smp.Unet(
+        self.model = smp.Unet(
             encoder_name='resnet50',
             encoder_depth=self.depth,
             encoder_weights='imagenet',
@@ -155,14 +127,27 @@ class teacherUnet(nn.Module):
             in_channels=self.in_channels,
             classes=self.num_classes,
             activation=None,
+        )
+
+        for i in range(len(self.model.decoder.blocks)):
+            self.model.decoder.blocks[i] = SequentialPP(
+                self.model.decoder.blocks[i],   
+                nn.Dropout2d(p=dropout_prob)
             )
 
     def forward(self, inputs):
         return self.model(inputs)
-        # return self.conv(self.dropout(self.model(inputs)))
     
-    def to(self,device):
-        self.model=self.model.to(device)
-        # self.dropout=self.dropout.to(device)
-        # self.conv=self.conv.to(device)
+    def to(self, device):
+        self.model = self.model.to(device)
         return super().to(device)
+
+class SequentialPP(nn.Module):
+    def __init__(self,decoder_block,dropout_block):
+        super().__init__()
+        self.first=decoder_block
+        self.second=dropout_block
+
+    def forward(self,x,skip=None):
+        x=self.first(x,skip)
+        return self.second(x)

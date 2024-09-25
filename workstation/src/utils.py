@@ -78,7 +78,7 @@ class UnetMaskProcessor:
         return one_hot_mask
 
 class datasetSplitter:
-    def __init__(self, dataset, batch_size, test_split=0.3, random_seed=7):
+    def __init__(self, dataset, batch_size, test_split=0.1, random_seed=7):
         self.dataset = dataset
         self.batch_size = batch_size
         self.test_split = test_split
@@ -96,7 +96,7 @@ class datasetSplitter:
         test_dataset.dataset.augment=False
 
         # Create data loaders
-        self.train_loader = DataLoader(train_dataset,batch_size=self.batch_size ,num_workers=2,persistent_workers=True,shuffle=True,prefetch_factor=128)
-        self.test_loader = DataLoader(test_dataset, batch_size=self.batch_size, num_workers=2,persistent_workers=True,shuffle=False,prefetch_factor=128)
+        self.train_loader = DataLoader(train_dataset,batch_size=self.batch_size ,num_workers=4,persistent_workers=True,shuffle=True,prefetch_factor=64)
+        self.test_loader = DataLoader(test_dataset, batch_size=self.batch_size, num_workers=2,shuffle=False,prefetch_factor=32)
 
         return self.train_loader, self.test_loader

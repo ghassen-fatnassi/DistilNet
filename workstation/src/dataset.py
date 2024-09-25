@@ -25,14 +25,12 @@ class SegDataset(Dataset):
 
         self.T_for_both = v2.Compose([
             v2.RandomHorizontalFlip(p=0.5),
-            v2.RandomApply([v2.RandomRotation(degrees=60),], p=0.2),
+            v2.RandomApply([v2.RandomRotation(degrees=60),], p=0.5),
             v2.RandomAffine(degrees=0, translate=(0.2, 0.2), scale=(0.9, 1.1)),
-            v2.RandomErasing(p=0.4, scale=(0.02, 0.1), ratio=(0.3, 3.3)),
         ])
         self.T_image_only = v2.Compose([
-            v2.RandomPhotometricDistort(p=0.2),
+            v2.RandomPhotometricDistort(p=0.3),
             v2.RandomGrayscale(p=0.5),
-            v2.RandomApply([v2.GaussianBlur((5, 5))], p=0.2),
         ])
         self.T_for_mask = v2.Compose([
             v2.Resize((self.D, self.D), interpolation=InterpolationMode.NEAREST),
