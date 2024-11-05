@@ -1,35 +1,43 @@
-# Presentation 📊
+# Project Overview
 
-## Brief Intro 🌟
-- **Distillation x Segmentation**: An overview of how distillation techniques are applied to segmentation tasks.
+## Introduction
+**Distillation in Semantic Segmentation**: An exploration of how knowledge distillation techniques can enhance model efficiency and accuracy in segmentation tasks.
 
-## Done ✅
-- **Research 📚**
-  - **Original Paper**: Summarized insights and key points.
-  - **Deep Dive into CE Loss and Dark Knowledge**: Understanding cross-entropy loss and the concept of dark knowledge in distillation.
-  - **Various Paradigms of Distillation**: Exploring different distillation approaches.
-- **Model 🧠**
-  - **UNet Choice Explanation**: Justification for choosing the UNet architecture for the task.
-- **Data 📈**
-  - **BDD100K + Cityscapes & Class Imbalance Problem**: Analysis of the datasets used and the challenge of class imbalance.
-- **Code 💻**
-  - **Working Code for Training & Distillation of UNet Model (PyTorch)**: Implementation details.
-  - **Distributed Training Option (Accelerate)**: Configuration for distributed training.
-  - **Logging All Chosen Model Metrics, Hardware Consumption via API (wandb)**: Monitoring and logging setup.
-  - **Tested 10 Epochs on GTX 1660 TI**: Initial performance testing.
+## Completed Tasks
 
-## Doing 🔄
-- **Research 🧐**
-  - **Thinking About a Loss Function for the Teacher Model that Favors Teaching & Performance (High Entropy Output)**: Developing a specialized loss function.
-  - **Deciding on Distillation Paradigm for UNet (Decoder, Encoder, Bottleneck)**: Selecting the most suitable distillation approach for UNet.
-  - **Improving Online Distillation: Alternating Loss Functions**: Exploring methods to enhance online distillation.
-  - **Reframing the Problem in Terms of Bias and Variance**: Aiming for better problem formulation.
+### Research
+- **Paper Analysis**: Summarized insights from the original paper, focusing on key methodologies and findings.
+- **Cross-Entropy Loss and Dark Knowledge**: Reviewed the role of cross-entropy loss and the concept of "dark knowledge" in knowledge distillation.
+- **Distillation Paradigms**: Explored various distillation methods, assessing their applicability to segmentation.
 
-## To Do 📝
-- **Model 🛠️**
-  - **Aligning Number of Parameters of Student Model with Compute Capabilities of Modern Self-Driving Cars**: Optimizing the student model for real-world applications.
-- **Data 🧬**
-  - **Studying Properties of the Dataset Better**: Deepening the understanding of dataset characteristics.
-- **Code 👨‍💻**
-  - **Profiling Code to Measure Inference Time of the Student Model**: Performance analysis.
-  - **Logging Images Through Network Layers to Gain New Insights**: Visualizing and understanding model behavior.
+### Model Development
+- **UNet Architecture Selection**: Provided justification for using the UNet architecture for this segmentation task, considering its compatibility with distillation techniques.
+
+### Data Preparation
+- **Dataset Analysis (BDD100K and Cityscapes)**: Evaluated dataset suitability for segmentation tasks and addressed class imbalance issues.
+
+### Code Implementation
+- **UNet Training and Distillation Pipeline (PyTorch)**: Built and tested a comprehensive codebase for training and distillation.
+- **Distributed Training Configuration (Accelerate)**: Configured for efficient distributed training using the Accelerate library.
+- **Logging and Monitoring (Weights & Biases)**: Set up monitoring to track model metrics, hardware usage, and other performance indicators.
+- **Initial Model Testing**: Conducted preliminary testing over 10 epochs on a GTX 1660 TI to verify setup and performance.
+
+## Ongoing Work
+
+### Research
+- **Loss Function for Teacher Model**: Designing a loss function that promotes high entropy outputs, supporting effective knowledge transfer.
+- **Distillation Paradigm Selection**: Identifying the best distillation approach for UNet, considering encoder, decoder, or bottleneck-focused strategies.
+- **Improving Online Distillation**: Experimenting with alternating loss functions to enhance online distillation.
+- **Reframing the Problem with Bias and Variance**: Formulating the problem with a focus on bias-variance trade-offs to improve model generalization.
+
+## Next Steps
+
+### Model Optimization
+- **Parameter Reduction for Student Model**: Adapting the student model's parameters to align with the computational capabilities of autonomous driving systems.
+
+### Data Exploration
+- **In-Depth Dataset Analysis**: Further study of dataset characteristics to better understand their impact on model performance.
+
+### Code and Performance Analysis
+- **Inference Time Profiling**: Profiling and optimizing the inference time of the student model to ensure real-time performance.
+- **Layer-wise Image Logging**: Developing visualization tools to track data flow through network layers, providing insights into model behavior.
