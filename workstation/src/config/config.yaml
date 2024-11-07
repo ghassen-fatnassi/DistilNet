@@ -30,5 +30,5 @@ paths:
     SegFormer: ./actia/workstation/src/config/SegFormer.yaml
     Unet: ./actia/workstation/src/config/Unet.yaml
 wandb:
-  API_KEY: 75fb19bcedae1a5456d20fbdf6bcbf2c9603f1b3
+  API_KEY: 
   silent: "true"
